@@ -2,29 +2,22 @@ import { FC } from "react";
 
 const Home: FC = () => {
   return (
-    <>
-      <section>
-        <div className="hero min-h-[calc(100vh-64px)] bg-base-200">
-          <div className="hero-content flex-col lg:flex-row">
-            <img
-              src="/images/hero.webp"
-              className="max-w-sm rounded-lg shadow-2xl"
-            />
-            <div>
-              <h1 className="text-5xl font-bold">Welcome</h1>
-              <p className="py-5">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia
-                minima laboriosam maxime sed dignissimos harum provident itaque
-                fugiat. A repellat aliquid inventore dolor tempora, omnis
-                perferendis aspernatur quo nisi excepturi. Ex, ullam odio iusto
-                esse necessitatibus doloremque repudiandae!
-              </p>
-              <button className="btn-primary btn">Get Started</button>
-            </div>
-          </div>
+    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center p-6">
+      <div className="text-center">
+        <h1 className="mb-4 text-5xl font-bold">Bem-vindo ao Sistema</h1>
+        <p className="mb-8 text-xl text-base-content/70">
+          Utilize a navegação lateral para acessar as funcionalidades
+        </p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <a href="/dashboard" className="btn btn-primary btn-lg">
+            📊 Ver Dashboard
+          </a>
+          <a href="/users" className="btn btn-outline btn-lg">
+            👥 Gerenciar Usuários
+          </a>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 };
 

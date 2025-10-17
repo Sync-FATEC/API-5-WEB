@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Logo } from "@/widgets/LayoutHeader/model/types";
+import type { Logo } from "@/components/LayoutHeader/model/types";
 
 const Logo: FC<Logo> = ({ logoName }: Logo) => {
   return (
