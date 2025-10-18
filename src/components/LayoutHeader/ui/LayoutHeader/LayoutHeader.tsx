@@ -1,6 +1,22 @@
 import { FC } from "react";
+import { useAuth } from "@/contexts/useAuth";
 
 const LayoutHeader: FC = () => {
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  const getUserInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <header className="sticky top-0 z-10 border-b border-base-300 bg-base-100 shadow-sm">
       <nav className="navbar">
@@ -28,13 +44,17 @@ const LayoutHeader: FC = () => {
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar placeholder">
               <div className="w-10 rounded-full bg-neutral text-neutral-content">
-                <span>U</span>
+                <span>{user ? getUserInitials(user.name) : 'U'}</span>
               </div>
             </label>
             <ul
               tabIndex={0}
               className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
             >
+              <li className="menu-title">
+                <span>{user?.name || 'Usuário'}</span>
+                <span className="text-xs opacity-60">{user?.email}</span>
+              </li>
               <li>
                 <a>Perfil</a>
               </li>
@@ -42,7 +62,9 @@ const LayoutHeader: FC = () => {
                 <a>Configurações</a>
               </li>
               <li>
-                <a>Sair</a>
+                <button onClick={handleLogout} className="text-error">
+                  Sair
+                </button>
               </li>
             </ul>
           </div>

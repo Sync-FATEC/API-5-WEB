@@ -1,13 +1,16 @@
 import { FC } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "@/app/Layout";
-import { Home, NoMatch, Dashboard, Users, Invoices } from "@/pages";
+import { Home, NoMatch, Dashboard, Users, Invoices, Login } from "@/pages";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const App: FC = () => {
   return (
-    <>
+    <AuthProvider>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<ProtectedRoute> <Layout /> </ProtectedRoute>}>
           <Route index element={<Home />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<Users />} />
@@ -15,7 +18,7 @@ const App: FC = () => {
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>
-    </>
+    </AuthProvider>
   );
 };
 
