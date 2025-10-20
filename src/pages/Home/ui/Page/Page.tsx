@@ -10,10 +10,10 @@ const Home: FC = () => {
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <a href="/dashboard" className="btn btn-primary btn-lg">
-            📊 Ver Dashboard
+            Ver Dashboard
           </a>
           <a href="/users" className="btn btn-outline btn-lg">
-            👥 Gerenciar Usuários
+            Gerenciar Usuários
           </a>
         </div>
       </div>

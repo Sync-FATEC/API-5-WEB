@@ -55,12 +55,12 @@ const LayoutHeader: FC = () => {
                 <span>{user?.name || 'Usuário'}</span>
                 <span className="text-xs opacity-60">{user?.email}</span>
               </li>
-              <li>
+              {/* <li>
                 <a>Perfil</a>
               </li>
               <li>
                 <a>Configurações</a>
-              </li>
+              </li> */}
               <li>
                 <button onClick={handleLogout} className="text-error">
                   Sair

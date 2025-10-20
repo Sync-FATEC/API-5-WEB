@@ -3,9 +3,9 @@ import { NavLink } from "react-router-dom";
 
 export const Sidebar: FC = () => {
   const navItems = [
-    { path: "/dashboard", label: "Dashboard", icon: "📊" },
-    { path: "/users", label: "Usuários", icon: "👥" },
-    { path: "/invoices", label: "Notas Fiscais", icon: "📄" },
+    { path: "/dashboard", label: "Dashboard" },
+    { path: "/users", label: "Usuários" },
+    // { path: "/invoices", label: "Notas Fiscais" },
   ];
 
   return (
@@ -27,7 +27,6 @@ export const Sidebar: FC = () => {
                   }`
                 }
               >
-                <span className="text-2xl">{item.icon}</span>
                 <span>{item.label}</span>
               </NavLink>
             </li>

@@ -43,12 +43,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setLoading(true);
       const user = await authService.signIn(email, password);
+      
+      if (user.role == "SOLDADO") {
+        return false
+      }
+      
       setUser(user);
       navigate("/");
       return true;
     } catch (error) {
       console.error("Erro ao fazer login:", error);
-      // Re-lança o erro para que o componente possa capturar a mensagem
       throw error;
     } finally {
       setLoading(false);

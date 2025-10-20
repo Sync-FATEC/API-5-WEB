@@ -131,7 +131,7 @@ export function useUserExcelImport(): UseUserExcelImport {
     setIsSubmitting(true);
     try {
       // Backend expects { users: UsersType[] }
-      await postJson<{ users: ParsedUser[] }, any>("/users", { users });
+      await postJson<{ users: ParsedUser[] }, any>("/auth/register", { users });
     } catch (e: any) {
       setErrors((prev) => [...prev, e?.message || "Falha ao enviar dados"]);
     } finally {

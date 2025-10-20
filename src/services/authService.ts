@@ -6,6 +6,9 @@ export interface AuthUser {
   name: string;
   firebaseUid?: string;
   createdAt?: string;
+  role?: string;
+  validUntil?: string;
+  isActive?: boolean;
 }
 
 export interface LoginResponse {
@@ -13,8 +16,11 @@ export interface LoginResponse {
   token?: string;
 }
 
+export interface UsersResponse {
+  users: AuthUser[];
+}
+
 export class AuthService {
-  // Login usando backend (que usa Firebase internamente)
   async signIn(email: string, password: string): Promise<AuthUser> {
     try {
       const response = await api.post<ApiResponse<LoginResponse>>('/auth/login', {
@@ -25,7 +31,6 @@ export class AuthService {
       if (response.data.success && response.data.data) {
         const userData = response.data.data.user;
         
-        // Salvar dados do usuário no localStorage
         localStorage.setItem('userData', JSON.stringify(userData));
         if (response.data.data.token) {
           localStorage.setItem('authToken', response.data.data.token);
@@ -54,7 +59,7 @@ export class AuthService {
       }
     }
   }
-
+  
   // Logout
   async signOut(): Promise<void> {
     try {
@@ -100,6 +105,22 @@ export class AuthService {
   // Recuperar token para requisições autenticadas
   getToken(): string | null {
     return localStorage.getItem('authToken');
+  }
+
+  // Listar usuários
+  async listUsers(): Promise<AuthUser[]> {
+    try {
+      const response = await api.get<ApiResponse<UsersResponse>>('/auth/users');
+      if (response.data.success && response.data.data && Array.isArray(response.data.data.users)) {
+        return response.data.data.users;
+      } else {
+        throw new Error(response.data.message || 'Erro ao obter usuários');
+      }
+    } catch (error: unknown) {
+      console.error('Erro ao listar usuários:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro inesperado ao listar usuários';
+      throw new Error(errorMessage);
+    }
   }
 
   // Verificar dados do usuário via API (opcional)

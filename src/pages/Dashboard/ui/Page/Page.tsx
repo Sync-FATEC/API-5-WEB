@@ -9,7 +9,7 @@ const Dashboard: FC = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div className="stats shadow">
+        {/* <div className="stats shadow">
           <div className="stat">
             <div className="stat-figure text-primary">
               <span className="text-4xl">👥</span>
@@ -18,9 +18,9 @@ const Dashboard: FC = () => {
             <div className="stat-value text-primary">--</div>
             <div className="stat-desc">Em breve</div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="stats shadow">
+        {/* <div className="stats shadow">
           <div className="stat">
             <div className="stat-figure text-secondary">
               <span className="text-4xl">📄</span>
@@ -40,7 +40,7 @@ const Dashboard: FC = () => {
             <div className="stat-value text-accent">--</div>
             <div className="stat-desc">Em breve</div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
