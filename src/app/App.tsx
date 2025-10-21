@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "@/app/Layout";
-import { Home, NoMatch, Dashboard, Users, Invoices, Login } from "@/pages";
+import { Home, NoMatch, Dashboard, Users, Invoices, Login, Stocks, StockDetails } from "@/pages";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -14,6 +14,8 @@ const App: FC = () => {
           <Route index element={<Home />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<Users />} />
+          <Route path="stocks" element={<Stocks />} />
+          <Route path="stocks/:id" element={<StockDetails />} />
           <Route path="invoices" element={<Invoices />} />
           <Route path="*" element={<NoMatch />} />
         </Route>

@@ -1,0 +1,1 @@
+export { default as StockDetails } from './ui/Page/Page';
