@@ -87,21 +87,7 @@ const StockDetails: FC = () => {
 
       {/* Filtros */}
       <div className="rounded-box mb-6 border border-base-300 bg-base-100 p-4">
-        <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <label className="label">
-              <span className="label-text">Período</span>
-            </label>
-            <select
-              className="select-bordered select w-full"
-              value={period}
-              onChange={(e) => setPeriod(e.target.value as Period)}
-            >
-              <option value="daily">Diário</option>
-              <option value="weekly">Semanal</option>
-              <option value="monthly">Mensal</option>
-            </select>
-          </div>
+        <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-2 lg:grid-cols-5">
           <div>
             <label className="label">
               <span className="label-text">Início</span>
@@ -191,26 +177,62 @@ const StockDetails: FC = () => {
 
           {/* Pedidos por Período */}
           <div className="rounded-box border border-base-300 bg-base-100 p-4">
-            <h2 className="mb-3 text-xl font-semibold">Pedidos por Período</h2>
+            <h2 className="mb-3 text-xl font-semibold">Pedidos</h2>
             <div className="space-y-2">
-              {dashboard.ordersByPeriod?.length ? (
-                dashboard.ordersByPeriod.map((item) => (
-                  <div key={item.period} className="flex items-center gap-3">
-                    <div className="w-24 text-sm text-base-content/70">
-                      {item.period}
-                    </div>
-                    <div className="h-2 flex-1 rounded bg-base-200">
-                      <div
-                        className="h-2 rounded bg-primary"
-                        style={{ width: `${Math.min(100, item.count)}%` }}
-                      />
-                    </div>
-                    <div className="w-12 text-right">{item.count}</div>
-                  </div>
-                ))
+              {dashboard.ordersByPeriod?.orders && dashboard.ordersByPeriod.orders.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="table table-zebra w-full">
+                    <thead>
+                      <tr>
+                        <th>Data Criação</th>
+                        <th>Status</th>
+                        <th>Seção</th>
+                        <th>Itens</th>
+                        <th>Data Retirada</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dashboard.ordersByPeriod.orders.map((order) => (
+                        <tr key={order.id}>
+                          <td>
+                            {new Date(order.creationDate).toLocaleDateString('pt-BR')}
+                          </td>
+                          <td>
+                            <div className={`badge ${
+                              order.status === 'completed' ? 'badge-success' :
+                              order.status === 'pending' ? 'badge-warning' :
+                              order.status === 'cancelled' ? 'badge-error' :
+                              'badge-info'
+                            }`}>
+                              {order.status}
+                            </div>
+                          </td>
+                          <td>{order.sectionName}</td>
+                          <td>
+                            <div className="tooltip" data-tip={
+                              order.orderItems.map(item => 
+                                `${item.merchandiseName} (${item.quantity})`
+                              ).join(', ')
+                            }>
+                              <span className="tooltip">
+                                {order.orderItems.length} item(s)
+                              </span>
+                            </div>
+                          </td>
+                          <td>
+                            {order.withdrawalDate 
+                              ? new Date(order.withdrawalDate).toLocaleDateString('pt-BR')
+                              : <span className="text-base-content/50">-</span>
+                            }
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
                 <div className="text-base-content/70">
-                  Sem dados para o período selecionado
+                  Nenhum pedido encontrado para o período selecionado
                 </div>
               )}
             </div>
@@ -313,9 +335,6 @@ const StockDetails: FC = () => {
                       />
                     </div>
                     <div className="w-20 text-right">{item.orderCount}</div>
-                    <div className="badge badge-outline ml-2">
-                      {item.percentage}%
-                    </div>
                   </div>
                 ))
               ) : (

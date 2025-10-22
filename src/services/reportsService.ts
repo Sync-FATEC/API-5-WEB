@@ -76,7 +76,22 @@ export interface CompleteDashboardData {
     name: string;
     location: string;
   };
-  ordersByPeriod: OrdersByPeriodData[];
+  ordersByPeriod: {
+    orders: {
+      id: string;
+      creationDate: string;
+      withdrawalDate: string | null;
+      status: string;
+      sectionId: string;
+      sectionName: string;
+      orderItems: {
+        id: string;
+        quantity: number;
+        merchandiseId: string;
+        merchandiseName: string;
+      }[];
+    }[];
+  };
   productStatus: ProductStatusData;
   ordersBySection: OrdersBySectionData[];
   topProducts: TopProductsInOrdersData[];
