@@ -51,7 +51,7 @@ export const UserForm: FC<Props> = ({ onSuccess, onCancel }) => {
 
     setIsSubmitting(true);
     try {
-      await postJson("/users", {
+      await postJson("/auth/register", {
         users: [{ ...formData, email: formData.email.toLowerCase() }],
       });
       setFormData({ name: "", email: "", role: "" });
@@ -64,18 +64,18 @@ export const UserForm: FC<Props> = ({ onSuccess, onCancel }) => {
   };
 
   return (
-    <div className="rounded-box border border-base-300 bg-base-100 p-6 shadow">
-      <h2 className="mb-6 text-2xl font-semibold">Cadastrar Usuário</h2>
+    <div className="rounded-box border border-base-300 bg-base-100 p-4 shadow sm:p-6">
+      <h2 className="mb-4 text-xl font-semibold sm:mb-6 sm:text-2xl">Cadastrar Usuário</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-medium">Nome completo</span>
+            <span className="label-text text-sm font-medium sm:text-base">Nome completo</span>
           </label>
           <input
             type="text"
             placeholder="Digite o nome"
-            className={`input input-bordered w-full ${errors.name ? "input-error" : ""}`}
+            className={`input input-bordered input-sm w-full sm:input-md ${errors.name ? "input-error" : ""}`}
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
@@ -88,12 +88,12 @@ export const UserForm: FC<Props> = ({ onSuccess, onCancel }) => {
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-medium">E-mail</span>
+            <span className="label-text text-sm font-medium sm:text-base">E-mail</span>
           </label>
           <input
             type="email"
             placeholder="usuario@exemplo.com"
-            className={`input input-bordered w-full ${errors.email ? "input-error" : ""}`}
+            className={`input input-bordered input-sm w-full sm:input-md ${errors.email ? "input-error" : ""}`}
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
@@ -106,10 +106,10 @@ export const UserForm: FC<Props> = ({ onSuccess, onCancel }) => {
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-medium">Papel/Cargo</span>
+            <span className="label-text text-sm font-medium sm:text-base">Papel/Cargo</span>
           </label>
           <select
-            className={`select select-bordered w-full ${errors.role ? "select-error" : ""}`}
+            className={`select select-bordered select-sm w-full sm:select-md ${errors.role ? "select-error" : ""}`}
             value={formData.role}
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
           >
@@ -131,24 +131,36 @@ export const UserForm: FC<Props> = ({ onSuccess, onCancel }) => {
           </div>
         )}
 
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            className="btn btn-primary flex-1"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Cadastrando..." : "Cadastrar"}
-          </button>
+        <div className="mt-4 flex flex-col-reverse gap-2 sm:mt-6 sm:flex-row sm:justify-end sm:gap-3">
           {onCancel && (
             <button
               type="button"
-              className="btn btn-ghost"
+              className="btn btn-outline btn-sm sm:btn-md"
               onClick={onCancel}
               disabled={isSubmitting}
             >
               Cancelar
             </button>
           )}
+          <button
+            type="submit"
+            className="btn btn-primary btn-sm sm:btn-md sm:min-w-[160px]"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <span className="loading loading-spinner loading-xs sm:loading-sm"></span>
+                <span className="text-xs sm:text-sm">Cadastrando...</span>
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+                <span className="text-xs sm:text-sm">Cadastrar</span>
+              </span>
+            )}
+          </button>
         </div>
       </form>
     </div>

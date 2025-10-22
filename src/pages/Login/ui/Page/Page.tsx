@@ -53,15 +53,24 @@ const Login: FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-base-200">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-base-200 sm:p-6">
       <div className="w-full max-w-md">
-        <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold">Fazer Login</h1>
-          <p className="text-base-content/70">Acesse sua conta</p>
+        <div className="mb-6 text-center sm:mb-8">
+          {/* Logo */}
+          <div className="mb-4 flex justify-center sm:mb-6">
+            <img 
+              src="/images/logo.svg" 
+              alt="Logo" 
+              className="h-16 w-auto object-contain sm:h-24"
+            />
+          </div>
+          
+          <h1 className="text-2xl font-bold sm:text-3xl">Fazer Login</h1>
+          <p className="text-sm text-base-content/70 sm:text-base">Acesse sua conta</p>
         </div>
 
-        <div className="rounded-box border border-base-300 bg-base-100 p-6 shadow">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="rounded-box border border-base-300 bg-base-100 p-4 shadow sm:p-6">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             {/* Mensagem de erro */}
             {error && (
               <div className="alert alert-error">
@@ -72,7 +81,7 @@ const Login: FC = () => {
             {/* Campo Email */}
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Email</span>
+                <span className="label-text text-sm font-medium sm:text-base">Email</span>
               </label>
               <input
                 type="email"
@@ -80,7 +89,7 @@ const Login: FC = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="seu@email.com"
-                className="input input-bordered w-full"
+                className="input input-bordered input-sm w-full sm:input-md"
                 required
               />
             </div>
@@ -88,7 +97,7 @@ const Login: FC = () => {
             {/* Campo Senha */}
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Senha</span>
+                <span className="label-text text-sm font-medium sm:text-base">Senha</span>
               </label>
               <input
                 type="password"
@@ -96,24 +105,31 @@ const Login: FC = () => {
                 value={formData.password}
                 onChange={handleInputChange}
                 placeholder="Digite sua senha"
-                className="input input-bordered w-full"
+                className="input input-bordered input-sm w-full sm:input-md"
                 required
               />
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
+                <a href="#" className="label-text-alt link link-hover text-xs sm:text-sm">
                   Esqueceu a senha?
                 </a>
               </label>
             </div>
 
             {/* Botão de Login */}
-            <div className="form-control mt-6">
+            <div className="form-control mt-4 sm:mt-6">
               <button
                 type="submit"
-                className={`btn btn-primary w-full ${isLoading ? 'loading' : ''}`}
+                className="btn btn-primary btn-sm w-full sm:btn-md"
                 disabled={isLoading}
               >
-                {isLoading ? 'Entrando...' : 'Entrar'}
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="loading loading-spinner loading-xs sm:loading-sm"></span>
+                    <span className="text-xs sm:text-sm">Entrando...</span>
+                  </span>
+                ) : (
+                  <span className="text-xs sm:text-sm">Entrar</span>
+                )}
               </button>
             </div>
           </form>

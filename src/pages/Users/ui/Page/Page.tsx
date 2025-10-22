@@ -87,33 +87,35 @@ const Users: FC = () => {
     : baseUsers;
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="p-4 sm:p-6">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold">Usuários</h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-2xl font-bold sm:text-3xl">Usuários</h1>
             {loading ? (
               <span className="badge badge-outline">Carregando...</span>
             ) : (
               <span className="badge badge-primary">Total: {users.length}</span>
             )}
           </div>
-          <p className="text-base-content/70">
+          <p className="text-sm text-base-content/70 sm:text-base">
             Gerencie os usuários do sistema
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <button
-            className="btn-primary btn-outline btn"
+            className="btn-primary btn-outline btn btn-sm sm:btn-md"
             onClick={() => setShowImport(!showImport)}
           >
-            Importar Excel
+            <span className="hidden sm:inline">Importar Excel</span>
+            <span className="sm:hidden">Importar</span>
           </button>
           <button
-            className="btn-primary btn"
+            className="btn-primary btn btn-sm sm:btn-md"
             onClick={() => setShowForm(!showForm)}
           >
-            Novo Usuário
+            <span className="hidden sm:inline">Novo Usuário</span>
+            <span className="sm:hidden">Novo</span>
           </button>
         </div>
       </div>
@@ -138,12 +140,12 @@ const Users: FC = () => {
           />
         )}
 
-        <div className="rounded-box border border-base-300 bg-base-100 p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold">Lista de Usuários</h2>
+        <div className="rounded-box border border-base-300 bg-base-100 p-4 shadow sm:p-6">
+          <h2 className="mb-4 text-lg font-semibold sm:text-xl">Lista de Usuários</h2>
           <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center">
-            <div className="flex items-center gap-3">
+            <div className="w-full md:w-auto">
               <select
-                className="select-bordered select w-full max-w-xs"
+                className="select-bordered select select-sm w-full sm:select-md md:max-w-xs"
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
               >
@@ -160,7 +162,7 @@ const Users: FC = () => {
             <div className="flex-1">
               <input
                 type="text"
-                className="input-bordered input w-full"
+                className="input-bordered input input-sm w-full sm:input-md"
                 placeholder="Buscar por nome ou email"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -187,101 +189,160 @@ const Users: FC = () => {
           )}
 
           {!loading && !error && displayedUsers.length > 0 && (
-            <div className="overflow-x-auto">
-              <table className="table-zebra table w-full">
-                <thead>
-                  <tr>
-                    <th
-                      className="cursor-pointer select-none"
-                      onClick={() => toggleSort("name")}
-                    >
-                      Nome{" "}
-                      {sortKey === "name" && (
-                        <span>{sortDir === "asc" ? "▲" : "▼"}</span>
-                      )}
-                    </th>
-                    <th
-                      className="cursor-pointer select-none"
-                      onClick={() => toggleSort("email")}
-                    >
-                      Email{" "}
-                      {sortKey === "email" && (
-                        <span>{sortDir === "asc" ? "▲" : "▼"}</span>
-                      )}
-                    </th>
-                    <th
-                      className="cursor-pointer select-none"
-                      onClick={() => toggleSort("role")}
-                    >
-                      Acesso{" "}
-                      {sortKey === "role" && (
-                        <span>{sortDir === "asc" ? "▲" : "▼"}</span>
-                      )}
-                    </th>
-                    <th
-                      className="cursor-pointer select-none"
-                      onClick={() => toggleSort("isActive")}
-                    >
-                      Status{" "}
-                      {sortKey === "isActive" && (
-                        <span>{sortDir === "asc" ? "▲" : "▼"}</span>
-                      )}
-                    </th>
-                    <th
-                      className="cursor-pointer select-none"
-                      onClick={() => toggleSort("validUntil")}
-                    >
-                      Validade{" "}
-                      {sortKey === "validUntil" && (
-                        <span>{sortDir === "asc" ? "▲" : "▼"}</span>
-                      )}
-                    </th>
-                    <th
-                      className="cursor-pointer select-none"
-                      onClick={() => toggleSort("createdAt")}
-                    >
-                      Criado em{" "}
-                      {sortKey === "createdAt" && (
-                        <span>{sortDir === "asc" ? "▲" : "▼"}</span>
-                      )}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayedUsers.map((u) => (
-                    <tr key={u.id}>
-                      <td>{u.name}</td>
-                      <td>{u.email}</td>
-                      <td>
-                        {u.role
-                          ? u.role.charAt(0).toUpperCase() +
-                            u.role.slice(1).toLowerCase()
-                          : "-"}
-                      </td>
-                      <td>
-                        {u.isActive === undefined ? (
-                          "-"
-                        ) : u.isActive ? (
-                          <span className="badge badge-success">Ativo</span>
-                        ) : (
-                          <span className="badge badge-ghost">Inativo</span>
+            <>
+              {/* Tabela para Desktop */}
+              <div className="hidden overflow-x-auto lg:block">
+                <table className="table-zebra table w-full">
+                  <thead>
+                    <tr>
+                      <th
+                        className="cursor-pointer select-none"
+                        onClick={() => toggleSort("name")}
+                      >
+                        Nome{" "}
+                        {sortKey === "name" && (
+                          <span>{sortDir === "asc" ? "▲" : "▼"}</span>
                         )}
-                      </td>
-                      <td>
-                        {u.validUntil
-                          ? new Date(u.validUntil).toLocaleDateString("pt-BR")
-                          : "-"}
-                      </td>
-                      <td>
-                        {u.createdAt
-                          ? new Date(u.createdAt).toLocaleString()
-                          : "-"}
-                      </td>
+                      </th>
+                      <th
+                        className="cursor-pointer select-none"
+                        onClick={() => toggleSort("email")}
+                      >
+                        Email{" "}
+                        {sortKey === "email" && (
+                          <span>{sortDir === "asc" ? "▲" : "▼"}</span>
+                        )}
+                      </th>
+                      <th
+                        className="cursor-pointer select-none"
+                        onClick={() => toggleSort("role")}
+                      >
+                        Acesso{" "}
+                        {sortKey === "role" && (
+                          <span>{sortDir === "asc" ? "▲" : "▼"}</span>
+                        )}
+                      </th>
+                      <th
+                        className="cursor-pointer select-none"
+                        onClick={() => toggleSort("isActive")}
+                      >
+                        Status{" "}
+                        {sortKey === "isActive" && (
+                          <span>{sortDir === "asc" ? "▲" : "▼"}</span>
+                        )}
+                      </th>
+                      <th
+                        className="cursor-pointer select-none"
+                        onClick={() => toggleSort("validUntil")}
+                      >
+                        Validade{" "}
+                        {sortKey === "validUntil" && (
+                          <span>{sortDir === "asc" ? "▲" : "▼"}</span>
+                        )}
+                      </th>
+                      <th
+                        className="cursor-pointer select-none"
+                        onClick={() => toggleSort("createdAt")}
+                      >
+                        Criado em{" "}
+                        {sortKey === "createdAt" && (
+                          <span>{sortDir === "asc" ? "▲" : "▼"}</span>
+                        )}
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {displayedUsers.map((u) => (
+                      <tr key={u.id}>
+                        <td>{u.name}</td>
+                        <td>{u.email}</td>
+                        <td>
+                          {u.role
+                            ? u.role.charAt(0).toUpperCase() +
+                              u.role.slice(1).toLowerCase()
+                            : "-"}
+                        </td>
+                        <td>
+                          {u.isActive === undefined ? (
+                            "-"
+                          ) : u.isActive ? (
+                            <span className="badge badge-success">Ativo</span>
+                          ) : (
+                            <span className="badge badge-ghost">Inativo</span>
+                          )}
+                        </td>
+                        <td>
+                          {u.validUntil
+                            ? new Date(u.validUntil).toLocaleDateString("pt-BR")
+                            : "-"}
+                        </td>
+                        <td>
+                          {u.createdAt
+                            ? new Date(u.createdAt).toLocaleString()
+                            : "-"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Cards para Mobile/Tablet */}
+              <div className="space-y-3 lg:hidden">
+                {displayedUsers.map((u) => (
+                  <div
+                    key={u.id}
+                    className="rounded-lg border border-base-300 bg-base-100 p-3 shadow-sm sm:p-4"
+                  >
+                    <div className="mb-3 flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="truncate font-semibold text-base sm:text-lg">{u.name}</h3>
+                        <p className="truncate text-xs text-base-content/70 sm:text-sm">{u.email}</p>
+                      </div>
+                      <div className="flex-shrink-0">
+                        {u.isActive === undefined ? (
+                          <span className="badge badge-ghost badge-sm">-</span>
+                        ) : u.isActive ? (
+                          <span className="badge badge-success badge-sm">Ativo</span>
+                        ) : (
+                          <span className="badge badge-ghost badge-sm">Inativo</span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-1.5 text-xs sm:space-y-2 sm:text-sm">
+                      <div className="flex justify-between gap-2">
+                        <span className="font-medium text-base-content/70">Acesso:</span>
+                        <span className="text-right">
+                          {u.role
+                            ? u.role.charAt(0).toUpperCase() +
+                              u.role.slice(1).toLowerCase()
+                            : "-"}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between gap-2">
+                        <span className="font-medium text-base-content/70">Validade:</span>
+                        <span className="text-right">
+                          {u.validUntil
+                            ? new Date(u.validUntil).toLocaleDateString("pt-BR")
+                            : "-"}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between gap-2">
+                        <span className="font-medium text-base-content/70">Criado em:</span>
+                        <span className="text-right">
+                          {u.createdAt
+                            ? new Date(u.createdAt).toLocaleDateString("pt-BR")
+                            : "-"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>
