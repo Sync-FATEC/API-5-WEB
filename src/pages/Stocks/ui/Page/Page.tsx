@@ -79,28 +79,28 @@ const Stocks: FC = () => {
     : activeStocks;
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="p-4 sm:p-6">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold">Estoques</h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-2xl font-bold sm:text-3xl">Estoques</h1>
             {loading ? (
               <span className="badge badge-outline">Carregando...</span>
             ) : (
               <span className="badge badge-primary">Total: {displayedStocks.length}</span>
             )}
           </div>
-          <p className="text-base-content/70">Gerencie os estoques do sistema</p>
+          <p className="text-sm text-base-content/70 sm:text-base">Gerencie os estoques do sistema</p>
         </div>
       </div>
 
-      <div className="rounded-box border border-base-300 bg-base-100 p-6 shadow">
-        <h2 className="mb-4 text-xl font-semibold">Lista de Estoques</h2>
+      <div className="rounded-box border border-base-300 bg-base-100 p-4 shadow sm:p-6">
+        <h2 className="mb-4 text-lg font-semibold sm:text-xl">Lista de Estoques</h2>
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center">
           <div className="flex-1">
             <input
               type="text"
-              className="input input-bordered w-full"
+              className="input input-bordered input-sm w-full sm:input-md"
               placeholder="Buscar por nome ou local"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -123,34 +123,65 @@ const Stocks: FC = () => {
         )}
 
         {!loading && !error && displayedStocks.length > 0 && (
-          <div className="overflow-x-auto">
-            <table className="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th className="cursor-pointer select-none" onClick={() => toggleSort('name')}>
-                    Nome {sortKey === 'name' && (<span>{sortDir === 'asc' ? '▲' : '▼'}</span>)}
-                  </th>
-                  <th className="cursor-pointer select-none" onClick={() => toggleSort('location')}>
-                    Local {sortKey === 'location' && (<span>{sortDir === 'asc' ? '▲' : '▼'}</span>)}
-                  </th>
-                  <th>
-                    Ações
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {displayedStocks.map((s) => (
-                  <tr key={s.id}>
-                    <td>{s.name}</td>
-                    <td>{s.location}</td>
-                    <td>
-                      <a href={`/stocks/${s.id}`} className="btn btn-sm btn-outline">Detalhes</a>
-                    </td>
+          <>
+            {/* Tabela para Desktop */}
+            <div className="hidden overflow-x-auto lg:block">
+              <table className="table table-zebra w-full">
+                <thead>
+                  <tr>
+                    <th className="cursor-pointer select-none" onClick={() => toggleSort('name')}>
+                      Nome {sortKey === 'name' && (<span>{sortDir === 'asc' ? '▲' : '▼'}</span>)}
+                    </th>
+                    <th className="cursor-pointer select-none" onClick={() => toggleSort('location')}>
+                      Local {sortKey === 'location' && (<span>{sortDir === 'asc' ? '▲' : '▼'}</span>)}
+                    </th>
+                    <th>
+                      Ações
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {displayedStocks.map((s) => (
+                    <tr key={s.id}>
+                      <td>{s.name}</td>
+                      <td>{s.location}</td>
+                      <td>
+                        <a href={`/stocks/${s.id}`} className="btn btn-sm btn-outline">Detalhes</a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Cards para Mobile/Tablet */}
+            <div className="space-y-3 lg:hidden">
+              {displayedStocks.map((s) => (
+                <div
+                  key={s.id}
+                  className="rounded-lg border border-base-300 bg-base-100 p-3 shadow-sm sm:p-4"
+                >
+                  <div className="mb-3 flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="truncate font-semibold text-base sm:text-lg">{s.name}</h3>
+                      <p className="flex items-center gap-1 text-xs text-base-content/70 sm:text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                        </svg>
+                        {s.location}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <a href={`/stocks/${s.id}`} className="btn btn-outline btn-sm">
+                      Ver Detalhes
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
