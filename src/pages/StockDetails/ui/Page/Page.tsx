@@ -6,6 +6,8 @@ import {
   type CompleteDashboard,
   type Period,
 } from "@/services/reportsService";
+import { usePagination } from "@/hooks/usePagination";
+import { Pagination } from "@/components/Pagination/Pagination";
 
 const StockDetails: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +22,27 @@ const StockDetails: FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const canFetch = useMemo(() => !!id && !!user?.id, [id, user?.id]);
+
+  // Paginação para cada seção
+  const ordersPagination = usePagination({
+    data: dashboard?.ordersByPeriod?.orders || [],
+    itemsPerPage: 10
+  });
+
+  const ordersBySectionPagination = usePagination({
+    data: dashboard?.ordersBySection || [],
+    itemsPerPage: 10
+  });
+
+  const topProductsPagination = usePagination({
+    data: dashboard?.topProducts || [],
+    itemsPerPage: 10
+  });
+
+  const stockAlertsPagination = usePagination({
+    data: dashboard?.stockAlerts || [],
+    itemsPerPage: 10
+  });
 
   const fetchDashboard = async () => {
     if (!canFetch || !id) return;
@@ -179,7 +202,14 @@ const StockDetails: FC = () => {
 
           {/* Pedidos por Período */}
           <div className="rounded-box border border-base-300 bg-base-100 p-3 sm:p-4">
-            <h2 className="mb-3 text-lg font-semibold sm:text-xl">Pedidos</h2>
+            <h2 className="mb-3 text-lg font-semibold sm:text-xl">
+              Pedidos 
+              {dashboard.ordersByPeriod?.orders && dashboard.ordersByPeriod.orders.length > 0 && (
+                <span className="text-sm font-normal text-base-content/70 ml-2">
+                  ({dashboard.ordersByPeriod.orders.length} total)
+                </span>
+              )}
+            </h2>
             <div className="space-y-2">
               {dashboard.ordersByPeriod?.orders && dashboard.ordersByPeriod.orders.length > 0 ? (
                 <div className="w-full">
@@ -194,7 +224,7 @@ const StockDetails: FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {dashboard.ordersByPeriod.orders.map((order) => (
+                      {ordersPagination.paginatedData.map((order) => (
                         <tr key={order.id}>
                           <td className="text-xs">
                             {new Date(order.creationDate).toLocaleDateString('pt-BR')}
@@ -231,6 +261,13 @@ const StockDetails: FC = () => {
                       ))}
                     </tbody>
                   </table>
+                  <Pagination
+                    currentPage={ordersPagination.currentPage}
+                    totalPages={ordersPagination.totalPages}
+                    onPageChange={ordersPagination.goToPage}
+                    canGoPrev={ordersPagination.canGoPrev}
+                    canGoNext={ordersPagination.canGoNext}
+                  />
                 </div>
               ) : (
                 <div className="text-xs text-base-content/70 sm:text-sm">
@@ -240,107 +277,41 @@ const StockDetails: FC = () => {
             </div>
           </div>
 
-          {/* Status de Produtos */}
-          <div className="rounded-box border border-base-300 bg-base-100 p-3 sm:p-4">
-            <h2 className="mb-3 text-lg font-semibold sm:text-xl">Produtos por Status</h2>
-            {dashboard.productStatus ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
-                  <div className="stats shadow">
-                    <div className="stat p-2 sm:p-4">
-                      <div className="stat-title text-[10px] sm:text-xs">Total</div>
-                      <div className="stat-value text-lg sm:text-2xl">
-                        {dashboard.productStatus.total}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="stats shadow">
-                    <div className="stat p-2 sm:p-4">
-                      <div className="stat-title text-[10px] sm:text-xs">Em estoque</div>
-                      <div className="stat-value text-success text-lg sm:text-2xl">
-                        {dashboard.productStatus.inStock}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="stats shadow">
-                    <div className="stat p-2 sm:p-4">
-                      <div className="stat-title text-[10px] sm:text-xs">Baixo</div>
-                      <div className="stat-value text-warning text-lg sm:text-2xl">
-                        {dashboard.productStatus.lowStock}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="stats shadow">
-                    <div className="stat p-2 sm:p-4">
-                      <div className="stat-title text-[10px] sm:text-xs">Crítico</div>
-                      <div className="stat-value text-error text-lg sm:text-2xl">
-                        {dashboard.productStatus.critical}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="divider text-xs sm:text-sm">Por Tipo</div>
-                <div className="space-y-2">
-                  {dashboard.productStatus.byType?.length ? (
-                    dashboard.productStatus.byType.map((item) => (
-                      <div
-                        key={item.typeName}
-                        className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3"
-                      >
-                        <div className="min-w-0 flex-shrink-0 text-xs text-base-content/70 sm:w-40 sm:text-sm">
-                          <span className="truncate block">{item.typeName}</span>
-                        </div>
-                        <div className="h-2 flex-1 rounded bg-base-200">
-                          <div
-                            className="h-2 rounded bg-secondary"
-                            style={{ width: `${Math.min(100, item.total)}%` }}
-                          />
-                        </div>
-                        <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-                          <div className="w-8 text-right text-xs sm:w-12 sm:text-sm">{item.total}</div>
-                          <div className="badge badge-success badge-sm">
-                            OK: {item.inStock}
-                          </div>
-                          <div className="badge badge-warning badge-sm">
-                            Baixo: {item.lowStock}
-                          </div>
-                          <div className="badge badge-error badge-sm">
-                            Crítico: {item.critical}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-xs text-base-content/70 sm:text-sm">
-                      Sem dados por tipo
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="text-xs text-base-content/70 sm:text-sm">Sem dados de status</div>
-            )}
-          </div>
-
           {/* Pedidos por Seção */}
           <div className="rounded-box border border-base-300 bg-base-100 p-3 sm:p-4">
-            <h2 className="mb-3 text-lg font-semibold sm:text-xl">Pedidos por Seção</h2>
+            <h2 className="mb-3 text-lg font-semibold sm:text-xl">
+              Pedidos por Seção
+              {dashboard.ordersBySection?.length && dashboard.ordersBySection.length > 0 && (
+                <span className="text-sm font-normal text-base-content/70 ml-2">
+                  ({dashboard.ordersBySection.length} total)
+                </span>
+              )}
+            </h2>
             <div className="space-y-2">
               {dashboard.ordersBySection?.length ? (
-                dashboard.ordersBySection.map((item) => (
-                  <div key={item.sectionId} className="flex items-center gap-2 sm:gap-3">
-                    <div className="min-w-0 flex-1 truncate text-xs text-base-content/70 sm:w-32 sm:flex-none sm:text-sm">
-                      {item.sectionName}
+                <>
+                  {ordersBySectionPagination.paginatedData.map((item) => (
+                    <div key={item.sectionId} className="flex items-center gap-2 sm:gap-3">
+                      <div className="min-w-0 flex-1 truncate text-xs text-base-content/70 sm:w-32 sm:flex-none sm:text-sm">
+                        {item.sectionName}
+                      </div>
+                      <div className="h-2 flex-1 rounded bg-base-200">
+                        <div
+                          className="h-2 rounded bg-accent"
+                          style={{ width: `${Math.min(100, item.orderCount)}%` }}
+                        />
+                      </div>
+                      <div className="w-12 text-right text-xs sm:w-16 sm:text-sm">{item.orderCount}</div>
                     </div>
-                    <div className="h-2 flex-1 rounded bg-base-200">
-                      <div
-                        className="h-2 rounded bg-accent"
-                        style={{ width: `${Math.min(100, item.orderCount)}%` }}
-                      />
-                    </div>
-                    <div className="w-12 text-right text-xs sm:w-16 sm:text-sm">{item.orderCount}</div>
-                  </div>
-                ))
+                  ))}
+                  <Pagination
+                    currentPage={ordersBySectionPagination.currentPage}
+                    totalPages={ordersBySectionPagination.totalPages}
+                    onPageChange={ordersBySectionPagination.goToPage}
+                    canGoPrev={ordersBySectionPagination.canGoPrev}
+                    canGoNext={ordersBySectionPagination.canGoNext}
+                  />
+                </>
               ) : (
                 <div className="text-xs text-base-content/70 sm:text-sm">Sem dados por seção</div>
               )}
@@ -349,33 +320,49 @@ const StockDetails: FC = () => {
 
           {/* Produtos mais Solicitados */}
           <div className="rounded-box border border-base-300 bg-base-100 p-3 sm:p-4">
-            <h2 className="mb-3 text-lg font-semibold sm:text-xl">Top Produtos</h2>
+            <h2 className="mb-3 text-lg font-semibold sm:text-xl">
+              Top Produtos
+              {dashboard.topProducts?.length && dashboard.topProducts.length > 0 && (
+                <span className="text-sm font-normal text-base-content/70 ml-2">
+                  ({dashboard.topProducts.length} total)
+                </span>
+              )}
+            </h2>
             <div className="space-y-2">
               {dashboard.topProducts?.length ? (
-                dashboard.topProducts.map((item) => (
-                  <div
-                    key={item.merchandiseTypeId}
-                    className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3"
-                  >
-                    <div className="min-w-0 truncate text-xs text-base-content/70 sm:w-40 sm:text-sm">
-                      {item.name}
-                    </div>
-                    <div className="h-2 flex-1 rounded bg-base-200">
-                      <div
-                        className="h-2 rounded bg-info"
-                        style={{
-                          width: `${Math.min(100, item.totalQuantity)}%`,
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-12 text-right text-xs sm:w-16 sm:text-sm">{item.totalQuantity}</div>
-                      <div className="badge badge-outline badge-sm">
-                        Pedidos: {item.orderCount}
+                <>
+                  {topProductsPagination.paginatedData.map((item) => (
+                    <div
+                      key={item.merchandiseTypeId}
+                      className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3"
+                    >
+                      <div className="min-w-0 truncate text-xs text-base-content/70 sm:w-40 sm:text-sm">
+                        {item.name}
+                      </div>
+                      <div className="h-2 flex-1 rounded bg-base-200">
+                        <div
+                          className="h-2 rounded bg-info"
+                          style={{
+                            width: `${Math.min(100, item.totalQuantity)}%`,
+                          }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-12 text-right text-xs sm:w-16 sm:text-sm">{item.totalQuantity}</div>
+                        <div className="badge badge-outline badge-sm">
+                          Pedidos: {item.orderCount}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                  <Pagination
+                    currentPage={topProductsPagination.currentPage}
+                    totalPages={topProductsPagination.totalPages}
+                    onPageChange={topProductsPagination.goToPage}
+                    canGoPrev={topProductsPagination.canGoPrev}
+                    canGoNext={topProductsPagination.canGoNext}
+                  />
+                </>
               ) : (
                 <div className="text-xs text-base-content/70 sm:text-sm">
                   Sem dados de top produtos
@@ -386,26 +373,42 @@ const StockDetails: FC = () => {
 
           {/* Alertas de Estoque */}
           <div className="rounded-box border border-base-300 bg-base-100 p-3 sm:p-4">
-            <h2 className="mb-3 text-lg font-semibold sm:text-xl">Alertas de Estoque</h2>
+            <h2 className="mb-3 text-lg font-semibold sm:text-xl">
+              Alertas de Estoque
+              {dashboard.stockAlerts?.length && dashboard.stockAlerts.length > 0 && (
+                <span className="text-sm font-normal text-base-content/70 ml-2">
+                  ({dashboard.stockAlerts.length} total)
+                </span>
+              )}
+            </h2>
             <div className="space-y-2">
               {dashboard.stockAlerts?.length ? (
-                dashboard.stockAlerts.map((item) => (
-                  <div
-                    key={item.merchandiseTypeId}
-                    className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3"
-                  >
-                    <div className="min-w-0 flex-1 truncate text-xs text-base-content/70 sm:w-40 sm:flex-none sm:text-sm">
-                      {item.name}
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <div className="badge badge-outline badge-sm capitalize">
-                        {item.status}
+                <>
+                  {stockAlertsPagination.paginatedData.map((item) => (
+                    <div
+                      key={item.merchandiseTypeId}
+                      className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3"
+                    >
+                      <div className="min-w-0 flex-1 truncate text-xs text-base-content/70 sm:w-40 sm:flex-none sm:text-sm">
+                        {item.name}
                       </div>
-                      <div className="text-xs sm:text-sm">Em estoque: {item.inStock}</div>
-                      <div className="text-xs sm:text-sm">Mínimo: {item.minimumStock}</div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <div className="badge badge-outline badge-sm capitalize">
+                          {item.status}
+                        </div>
+                        <div className="text-xs sm:text-sm">Em estoque: {item.inStock}</div>
+                        <div className="text-xs sm:text-sm">Mínimo: {item.minimumStock}</div>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                  <Pagination
+                    currentPage={stockAlertsPagination.currentPage}
+                    totalPages={stockAlertsPagination.totalPages}
+                    onPageChange={stockAlertsPagination.goToPage}
+                    canGoPrev={stockAlertsPagination.canGoPrev}
+                    canGoNext={stockAlertsPagination.canGoNext}
+                  />
+                </>
               ) : (
                 <div className="text-xs text-base-content/70 sm:text-sm">
                   Sem alertas de estoque
