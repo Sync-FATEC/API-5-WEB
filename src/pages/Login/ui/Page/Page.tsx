@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import { useAuth } from "@/contexts/useAuth";
 import { useNavigate } from "react-router-dom";
+import { AuthService } from "@/services/authService";
 
 const Login: FC = () => {
   const [formData, setFormData] = useState({
@@ -9,9 +10,17 @@ const Login: FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  // Estados para o modal de esqueceu a senha
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
+  const [forgotPasswordError, setForgotPasswordError] = useState("");
 
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const authService = new AuthService();
 
   // Se já estiver logado, redireciona para dashboard
   useEffect(() => {
@@ -50,6 +59,42 @@ const Login: FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleForgotPasswordClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowForgotPasswordModal(true);
+    setForgotPasswordEmail(formData.email); // Pré-preenche com o email do formulário se houver
+    setForgotPasswordMessage("");
+    setForgotPasswordError("");
+  };
+
+  const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSendingEmail(true);
+    setForgotPasswordError("");
+    setForgotPasswordMessage("");
+
+    try {
+      const message = await authService.forgotPassword(forgotPasswordEmail);
+      setForgotPasswordMessage(message);
+    } catch (error: unknown) {
+      console.error("Erro ao enviar email de recuperação:", error);
+      if (error instanceof Error) {
+        setForgotPasswordError(error.message);
+      } else {
+        setForgotPasswordError("Erro inesperado. Tente novamente.");
+      }
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  const closeForgotPasswordModal = () => {
+    setShowForgotPasswordModal(false);
+    setForgotPasswordEmail("");
+    setForgotPasswordMessage("");
+    setForgotPasswordError("");
   };
 
   return (
@@ -109,9 +154,13 @@ const Login: FC = () => {
                 required
               />
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover text-xs sm:text-sm">
+                <button 
+                  type="button"
+                  onClick={handleForgotPasswordClick}
+                  className="label-text-alt link link-hover text-xs sm:text-sm"
+                >
                   Esqueceu a senha?
-                </a>
+                </button>
               </label>
             </div>
 
@@ -135,6 +184,90 @@ const Login: FC = () => {
           </form>
         </div>
       </div>
+
+      {/* Modal de Esqueceu a Senha */}
+      {showForgotPasswordModal && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg mb-4">Recuperar Senha</h3>
+            
+            <form onSubmit={handleForgotPasswordSubmit}>
+              {/* Mensagem de sucesso */}
+              {forgotPasswordMessage && (
+                <div className="alert alert-success mb-4">
+                  <span>{forgotPasswordMessage}</span>
+                </div>
+              )}
+
+              {/* Mensagem de erro */}
+              {forgotPasswordError && (
+                <div className="alert alert-error mb-4">
+                  <span>{forgotPasswordError}</span>
+                </div>
+              )}
+
+              {!forgotPasswordMessage && (
+                <>
+                  <p className="text-sm text-base-content/70 mb-4">
+                    Digite seu email para receber as instruções de recuperação de senha.
+                  </p>
+
+                  <div className="form-control mb-4">
+                    <label className="label">
+                      <span className="label-text">Email</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={forgotPasswordEmail}
+                      onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                      placeholder="seu@email.com"
+                      className="input input-bordered w-full"
+                      required
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className="modal-action">
+                {!forgotPasswordMessage ? (
+                  <>
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={isSendingEmail || !forgotPasswordEmail.trim()}
+                    >
+                      {isSendingEmail ? (
+                        <span className="flex items-center gap-2">
+                          <span className="loading loading-spinner loading-sm"></span>
+                          Enviando...
+                        </span>
+                      ) : (
+                        "Enviar Email"
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={closeForgotPasswordModal}
+                      className="btn"
+                      disabled={isSendingEmail}
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={closeForgotPasswordModal}
+                    className="btn btn-primary"
+                  >
+                    Fechar
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
