@@ -4,6 +4,7 @@ export const Sidebar: FC = () => {
   const navItems = [
     // { path: "/dashboard", label: "Dashboard" },
     { path: "/users", label: "Usuários" },
+    { path: "/suppliers", label: "Fornecedores" },
     { path: "/stocks", label: "Estoques" },
     // { path: "/invoices", label: "Notas Fiscais" },
   ];
