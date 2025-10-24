@@ -15,7 +15,10 @@ export type UseUserExcelImport = {
   isSubmitting: boolean;
   onFileChange: (file?: File) => Promise<void>;
   submit: () => Promise<void>;
+  submitWithStock: (stockId: string) => Promise<void>;
   clear: () => void;
+  updateUser: (index: number, field: keyof ParsedUser, value: string) => void;
+  deleteUser: (index: number) => void;
 };
 
 const headerAliases: Record<string, keyof ParsedUser> = {
@@ -139,5 +142,37 @@ export function useUserExcelImport(): UseUserExcelImport {
     }
   }, [users]);
 
-  return useMemo(() => ({ users, errors, isParsing, isSubmitting, onFileChange, submit, clear }), [users, errors, isParsing, isSubmitting, onFileChange, submit, clear]);
+  const submitWithStock = useCallback(async (stockId: string) => {
+    if (!users.length) {
+      setErrors((e) => [...e, "Nenhum usuário para enviar"]);
+      return;
+    }
+    if (!stockId) {
+      setErrors((e) => [...e, "Selecione um estoque"]);
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const payload = users.map((u) => ({ ...u, stockId }));
+      await postJson<{ users: Array<ParsedUser & { stockId: string }> }, any>("/auth/register", { users: payload });
+    } catch (e: any) {
+      setErrors((prev) => [...prev, e?.message || "Falha ao enviar dados"]);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [users]);
+
+  const updateUser = useCallback((index: number, field: keyof ParsedUser, value: string) => {
+    setUsers((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  }, []);
+
+  const deleteUser = useCallback((index: number) => {
+    setUsers((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  return useMemo(() => ({ users, errors, isParsing, isSubmitting, onFileChange, submit, submitWithStock, clear, updateUser, deleteUser }), [users, errors, isParsing, isSubmitting, onFileChange, submit, submitWithStock, clear, updateUser, deleteUser]);
 }
