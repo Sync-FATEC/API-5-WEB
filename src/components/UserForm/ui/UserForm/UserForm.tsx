@@ -1,10 +1,17 @@
 import { FC, FormEvent, useState } from "react";
 import { postJson } from "@/shared/api";
 
+
+export enum RoleEnum {
+  SOLDADO = "SOLDADO",
+  SUPERVISOR = "SUPERVISOR",
+  ADMIN = "ADMIN"
+}
+
 type UserFormData = {
   name: string;
   email: string;
-  role: string;
+  role: RoleEnum | "";
 };
 
 type Props = {
@@ -18,12 +25,12 @@ export const UserForm: FC<Props> = ({ onSuccess, onCancel }) => {
     email: "",
     role: "",
   });
-  const [errors, setErrors] = useState<Partial<UserFormData>>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; role?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string>("");
 
   const validate = (): boolean => {
-    const newErrors: Partial<UserFormData> = {};
+    const newErrors: { name?: string; email?: string; role?: string } = {};
 
     if (!formData.name.trim()) {
       newErrors.name = "Nome é obrigatório";
@@ -111,12 +118,12 @@ export const UserForm: FC<Props> = ({ onSuccess, onCancel }) => {
           <select
             className={`select select-bordered select-sm w-full sm:select-md ${errors.role ? "select-error" : ""}`}
             value={formData.role}
-            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, role: e.target.value as RoleEnum })}
           >
             <option value="">Selecione o papel</option>
-            <option value="admin">Administrador</option>
-            <option value="manager">Gerente</option>
-            <option value="user">Usuário</option>
+            <option value={RoleEnum.SOLDADO}>Soldado</option>
+            <option value={RoleEnum.SUPERVISOR}>Supervisor</option>
+            <option value={RoleEnum.ADMIN}>Admin</option>
           </select>
           {errors.role && (
             <label className="label">

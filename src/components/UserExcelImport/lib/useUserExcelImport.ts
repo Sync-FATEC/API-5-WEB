@@ -15,6 +15,7 @@ export type UseUserExcelImport = {
   isSubmitting: boolean;
   onFileChange: (file?: File) => Promise<void>;
   submit: () => Promise<void>;
+  submitWithStock: (stockId: string) => Promise<void>;
   clear: () => void;
 };
 
@@ -139,5 +140,25 @@ export function useUserExcelImport(): UseUserExcelImport {
     }
   }, [users]);
 
-  return useMemo(() => ({ users, errors, isParsing, isSubmitting, onFileChange, submit, clear }), [users, errors, isParsing, isSubmitting, onFileChange, submit, clear]);
+  const submitWithStock = useCallback(async (stockId: string) => {
+    if (!users.length) {
+      setErrors((e) => [...e, "Nenhum usuário para enviar"]);
+      return;
+    }
+    if (!stockId) {
+      setErrors((e) => [...e, "Selecione um estoque"]);
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const payload = users.map((u) => ({ ...u, stockId }));
+      await postJson<{ users: Array<ParsedUser & { stockId: string }> }, any>("/auth/register", { users: payload });
+    } catch (e: any) {
+      setErrors((prev) => [...prev, e?.message || "Falha ao enviar dados"]);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [users]);
+
+  return useMemo(() => ({ users, errors, isParsing, isSubmitting, onFileChange, submit, submitWithStock, clear }), [users, errors, isParsing, isSubmitting, onFileChange, submit, submitWithStock, clear]);
 }
