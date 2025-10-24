@@ -17,6 +17,8 @@ export type UseUserExcelImport = {
   submit: () => Promise<void>;
   submitWithStock: (stockId: string) => Promise<void>;
   clear: () => void;
+  updateUser: (index: number, field: keyof ParsedUser, value: string) => void;
+  deleteUser: (index: number) => void;
 };
 
 const headerAliases: Record<string, keyof ParsedUser> = {
@@ -160,5 +162,17 @@ export function useUserExcelImport(): UseUserExcelImport {
     }
   }, [users]);
 
-  return useMemo(() => ({ users, errors, isParsing, isSubmitting, onFileChange, submit, submitWithStock, clear }), [users, errors, isParsing, isSubmitting, onFileChange, submit, submitWithStock, clear]);
+  const updateUser = useCallback((index: number, field: keyof ParsedUser, value: string) => {
+    setUsers((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  }, []);
+
+  const deleteUser = useCallback((index: number) => {
+    setUsers((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  return useMemo(() => ({ users, errors, isParsing, isSubmitting, onFileChange, submit, submitWithStock, clear, updateUser, deleteUser }), [users, errors, isParsing, isSubmitting, onFileChange, submit, submitWithStock, clear, updateUser, deleteUser]);
 }

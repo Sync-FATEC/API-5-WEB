@@ -9,11 +9,12 @@ type Props = {
 
 export const UserExcelImport: FC<Props> = ({ onSuccess }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { users, errors, isParsing, isSubmitting, onFileChange, submitWithStock, clear } = useUserExcelImport();
+  const { users, errors, isParsing, isSubmitting, onFileChange, submitWithStock, clear, updateUser, deleteUser } = useUserExcelImport();
   const { user } = useAuth();
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [loadingStocks, setLoadingStocks] = useState(false);
   const [stockId, setStockId] = useState<string>("");
+  const [editingCell, setEditingCell] = useState<{ index: number; field: string } | null>(null);
 
   const selectedStock = useMemo(() => stocks.find((s) => s.id === stockId), [stocks, stockId]);
 
@@ -176,25 +177,95 @@ export const UserExcelImport: FC<Props> = ({ onSuccess }) => {
                   <th className="font-semibold">Email</th>
                   <th className="font-semibold">Role</th>
                   <th className="font-semibold">Estoque</th>
+                  <th className="font-semibold">Ações</th>
                 </tr>
               </thead>
               <tbody>
-                {users.slice(0, 10).map((u, idx) => (
-                  <tr key={u.email} className="hover">
+                {users.map((u, idx) => (
+                  <tr key={`${u.email}-${idx}`} className="hover">
                     <td>{idx + 1}</td>
-                    <td className="font-medium">{u.name}</td>
-                    <td className="text-sm text-base-content/70">{u.email}</td>
                     <td>
-                      <span className="badge badge-primary badge-sm">{u.role}</span>
+                      {editingCell?.index === idx && editingCell?.field === 'name' ? (
+                        <input
+                          type="text"
+                          className="input input-sm input-bordered w-full"
+                          value={u.name}
+                          onChange={(e) => updateUser(idx, 'name', e.target.value)}
+                          onBlur={() => setEditingCell(null)}
+                          autoFocus
+                        />
+                      ) : (
+                        <div
+                          className="cursor-pointer font-medium hover:bg-base-200 rounded px-2 py-1"
+                          onClick={() => setEditingCell({ index: idx, field: 'name' })}
+                        >
+                          {u.name}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      {editingCell?.index === idx && editingCell?.field === 'email' ? (
+                        <input
+                          type="email"
+                          className="input input-sm input-bordered w-full"
+                          value={u.email}
+                          onChange={(e) => updateUser(idx, 'email', e.target.value)}
+                          onBlur={() => setEditingCell(null)}
+                          autoFocus
+                        />
+                      ) : (
+                        <div
+                          className="cursor-pointer text-sm text-base-content/70 hover:bg-base-200 rounded px-2 py-1"
+                          onClick={() => setEditingCell({ index: idx, field: 'email' })}
+                        >
+                          {u.email}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      {editingCell?.index === idx && editingCell?.field === 'role' ? (
+                        <select
+                          className="select select-sm select-bordered"
+                          value={u.role}
+                          onChange={(e) => {
+                            updateUser(idx, 'role', e.target.value);
+                            setEditingCell(null);
+                          }}
+                          autoFocus
+                          onBlur={() => setEditingCell(null)}
+                        >
+                          <option value="SOLDADO">SOLDADO</option>
+                          <option value="SUPERVISOR">SUPERVISOR</option>
+                          <option value="ADMIN">ADMIN</option>
+                        </select>
+                      ) : (
+                        <span
+                          className="badge badge-primary badge-sm cursor-pointer"
+                          onClick={() => setEditingCell({ index: idx, field: 'role' })}
+                        >
+                          {u.role}
+                        </span>
+                      )}
                     </td>
                     <td className="text-sm">{selectedStock ? selectedStock.name : "-"}</td>
+                    <td>
+                      <button
+                        className="btn btn-ghost btn-xs text-error"
+                        onClick={() => deleteUser(idx)}
+                        title="Remover usuário"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-4 w-4 stroke-current">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             {users.length > 10 && (
               <div className="bg-base-200 px-4 py-2 text-center text-sm text-base-content/60">
-                + {users.length - 10} usuários adicionais
+                Mostrando todos os {users.length} usuários
               </div>
             )}
           </div>
