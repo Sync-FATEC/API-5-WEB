@@ -2,11 +2,8 @@ import { FC, FormEvent, useState } from "react";
 import { postJson } from "@/shared/api";
 
 
-export enum RoleEnum {
-  SOLDADO = "SOLDADO",
-  SUPERVISOR = "SUPERVISOR",
-  ADMIN = "ADMIN"
-}
+
+import { RoleEnum } from "@/types/enums";
 
 type UserFormData = {
   name: string;
@@ -123,7 +120,7 @@ export const UserForm: FC<Props> = ({ onSuccess, onCancel }) => {
             <option value="">Selecione o papel</option>
             <option value={RoleEnum.SOLDADO}>Soldado</option>
             <option value={RoleEnum.SUPERVISOR}>Supervisor</option>
-            <option value={RoleEnum.ADMIN}>Admin</option>
+            <option value={RoleEnum.ADMIN}>Administrador</option>
           </select>
           {errors.role && (
             <label className="label">

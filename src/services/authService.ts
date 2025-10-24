@@ -141,4 +141,32 @@ export class AuthService {
       throw new Error(errorMessage);
     }
   }
+
+  // Esqueceu a senha
+  async forgotPassword(email: string): Promise<string> {
+    try {
+      const response = await api.put<ApiResponse<{ message: string }>>('/auth/forgot-password', {
+        email
+      });
+
+      if (response.data.success && response.data.data) {
+        return response.data.data.message || 'Email de recuperação enviado com sucesso';
+      } else {
+        throw new Error(response.data.message || 'Erro ao enviar email de recuperação');
+      }
+    } catch (error: unknown) {
+      console.error('Erro ao solicitar recuperação de senha:', error);
+      
+      if (error && typeof error === 'object' && 'response' in error) {
+        const apiError = error as { response: { data?: { message?: string } } };
+        const message = apiError.response.data?.message || 'Erro no servidor';
+        throw new Error(message);
+      } else if (error && typeof error === 'object' && 'request' in error) {
+        throw new Error('Erro de conexão. Verifique sua internet e se o servidor está rodando.');
+      } else {
+        const errorMessage = error instanceof Error ? error.message : 'Erro inesperado';
+        throw new Error(errorMessage);
+      }
+    }
+  }
 }
