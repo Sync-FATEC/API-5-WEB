@@ -1,5 +1,11 @@
 import { api, ApiResponse } from '@/shared/api';
 
+export interface UserStock {
+  stockId: string;
+  stockName: string;
+  responsibility: string;
+}
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -9,6 +15,7 @@ export interface AuthUser {
   role?: string;
   validUntil?: string;
   isActive?: boolean;
+  stocks?: UserStock[];
 }
 
 export interface LoginResponse {
@@ -30,19 +37,19 @@ export class AuthService {
 
       if (response.data.success && response.data.data) {
         const userData = response.data.data.user;
-        
+
         localStorage.setItem('userData', JSON.stringify(userData));
         if (response.data.data.token) {
           localStorage.setItem('authToken', response.data.data.token);
         }
-        
+
         return userData;
       } else {
         throw new Error(response.data.message || 'Erro ao fazer login');
       }
     } catch (error: unknown) {
       console.error('Erro ao fazer login:', error);
-      
+
       // Tratar diferentes tipos de erro
       if (error && typeof error === 'object' && 'response' in error) {
         // Erro da API
@@ -59,14 +66,13 @@ export class AuthService {
       }
     }
   }
-  
   // Logout
   async signOut(): Promise<void> {
     try {
       // Limpar dados locais
       localStorage.removeItem('authToken');
       localStorage.removeItem('userData');
-      
+
       // Aqui você pode adicionar uma chamada para o backend se necessário
       // await api.post('/api/users/logout');
     } catch (error) {
@@ -82,7 +88,7 @@ export class AuthService {
     try {
       const userData = localStorage.getItem('userData');
       const token = localStorage.getItem('authToken');
-      
+
       if (userData && token) {
         return JSON.parse(userData);
       }
@@ -127,7 +133,7 @@ export class AuthService {
   async validateUser(email: string): Promise<AuthUser> {
     try {
       const response = await api.get<ApiResponse<AuthUser>>(`/api/users/${email}`);
-      
+
       if (response.data.success && response.data.data) {
         return response.data.data;
       } else {
@@ -135,7 +141,7 @@ export class AuthService {
       }
     } catch (error: unknown) {
       console.error('Erro ao validar usuário:', error);
-      const errorMessage = error && typeof error === 'object' && 'response' in error 
+      const errorMessage = error && typeof error === 'object' && 'response' in error
         ? (error as { response: { data?: { message?: string } } }).response.data?.message || 'Erro ao validar usuário'
         : 'Erro ao validar usuário';
       throw new Error(errorMessage);
@@ -156,7 +162,7 @@ export class AuthService {
       }
     } catch (error: unknown) {
       console.error('Erro ao solicitar recuperação de senha:', error);
-      
+
       if (error && typeof error === 'object' && 'response' in error) {
         const apiError = error as { response: { data?: { message?: string } } };
         const message = apiError.response.data?.message || 'Erro no servidor';
@@ -165,6 +171,57 @@ export class AuthService {
         throw new Error('Erro de conexão. Verifique sua internet e se o servidor está rodando.');
       } else {
         const errorMessage = error instanceof Error ? error.message : 'Erro inesperado';
+        throw new Error(errorMessage);
+      }
+    }
+  }
+
+  // Vincular usuário a um estoque
+  async linkUserToStock(userId: string, stockId: string, responsibility: 'SOLDADO' | 'SUPERVISOR' | 'ADMIN'): Promise<void> {
+    try {
+      const response = await api.post<ApiResponse<any>>(`/auth/users/${userId}/stocks`, {
+        stockId,
+        responsibility
+      });
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Erro ao vincular usuário ao estoque');
+      }
+    } catch (error: unknown) {
+      console.error('Erro ao vincular usuário ao estoque:', error);
+
+      if (error && typeof error === 'object' && 'response' in error) {
+        const apiError = error as { response: { data?: { message?: string } } };
+        const message = apiError.response.data?.message || 'Erro no servidor';
+        throw new Error(message);
+      } else if (error && typeof error === 'object' && 'request' in error) {
+        throw new Error('Erro de conexão. Verifique sua internet e se o servidor está rodando.');
+      } else {
+        const errorMessage = error instanceof Error ? error.message : 'Erro inesperado ao vincular usuário ao estoque';
+        throw new Error(errorMessage);
+      }
+    }
+  }
+
+  // Desvincular usuário de um estoque
+  async unlinkUserFromStock(userId: string, stockId: string): Promise<void> {
+    try {
+      const response = await api.delete<ApiResponse<any>>(`/auth/users/${userId}/stocks/${stockId}`);
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Erro ao desvincular usuário do estoque');
+      }
+    } catch (error: unknown) {
+      console.error('Erro ao desvincular usuário do estoque:', error);
+
+      if (error && typeof error === 'object' && 'response' in error) {
+        const apiError = error as { response: { data?: { message?: string } } };
+        const message = apiError.response.data?.message || 'Erro no servidor';
+        throw new Error(message);
+      } else if (error && typeof error === 'object' && 'request' in error) {
+        throw new Error('Erro de conexão. Verifique sua internet e se o servidor está rodando.');
+      } else {
+        const errorMessage = error instanceof Error ? error.message : 'Erro inesperado ao desvincular usuário do estoque';
         throw new Error(errorMessage);
       }
     }

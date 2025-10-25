@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { UserForm, UserExcelImport } from "@/components";
+import { UserForm, UserExcelImport, StockChangeModal } from "@/components";
 import { AuthService, AuthUser } from "@/services/authService";
 
 const Users: FC = () => {
@@ -12,6 +12,8 @@ const Users: FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [showStockModal, setShowStockModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -32,6 +34,30 @@ const Users: FC = () => {
 
     fetchUsers();
   }, []);
+
+  const handleOpenStockModal = (user: AuthUser) => {
+    setSelectedUser(user);
+    setShowStockModal(true);
+  };
+
+  const handleCloseStockModal = () => {
+    setShowStockModal(false);
+    setSelectedUser(null);
+  };
+
+  const handleStockChangeSuccess = async () => {
+    // Recarregar a lista de usuários após a troca de estoque
+    setLoading(true);
+    try {
+      const service = new AuthService();
+      const list = await service.listUsers();
+      setUsers(list);
+    } catch (err) {
+      console.error("Erro ao recarregar usuários:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const availableRoles = Array.from(
     new Set(users.map((u) => u.role).filter(Boolean)),
@@ -249,6 +275,7 @@ const Users: FC = () => {
                           <span>{sortDir === "asc" ? "▲" : "▼"}</span>
                         )}
                       </th>
+                      <th>Ações</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -280,6 +307,29 @@ const Users: FC = () => {
                           {u.createdAt
                             ? new Date(u.createdAt).toLocaleString()
                             : "-"}
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-sm btn-outline btn-primary"
+                            onClick={() => handleOpenStockModal(u)}
+                            title="Alterar Estoque"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                              />
+                            </svg>
+                            <span className="hidden sm:inline ml-1">Estoque</span>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -339,6 +389,29 @@ const Users: FC = () => {
                         </span>
                       </div>
                     </div>
+                    
+                    <div className="mt-3 pt-3 border-t border-base-300">
+                      <button
+                        className="btn btn-sm btn-outline btn-primary w-full"
+                        onClick={() => handleOpenStockModal(u)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                          />
+                        </svg>
+                        Alterar Estoque
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -346,6 +419,18 @@ const Users: FC = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de Troca de Estoque */}
+      {selectedUser && (
+          <StockChangeModal
+            isOpen={showStockModal}
+            onClose={handleCloseStockModal}
+            userId={selectedUser.id}
+            userName={selectedUser.name || "Usuário"}
+            userStocks={selectedUser.stocks || []}
+            onSuccess={handleStockChangeSuccess}
+          />
+        )}
     </div>
   );
 };
