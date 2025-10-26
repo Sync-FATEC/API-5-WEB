@@ -9,7 +9,7 @@ const Home: FC = () => {
           Utilize a navegação lateral para acessar as funcionalidades
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <a href="/dashboard" className="btn btn-primary btn-lg">
+          <a href="/stocks" className="btn btn-primary btn-lg">
             Ver Dashboard
           </a>
           <a href="/users" className="btn btn-outline btn-lg">
