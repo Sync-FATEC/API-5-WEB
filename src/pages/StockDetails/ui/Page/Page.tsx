@@ -25,6 +25,12 @@ const StockDetails: FC = () => {
   const [sortField, setSortField] = useState<'creationDate' | 'status' | 'sectionName' | 'withdrawalDate'>('creationDate');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
+  // Função para formatar data corretamente (evita problema de timezone)
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString + 'T00:00:00'); // Força horário local
+    return date.toLocaleDateString('pt-BR');
+  };
+
   const canFetch = useMemo(() => !!id && !!user?.id, [id, user?.id]);
 
   // Função para ordenar os dados
@@ -326,7 +332,7 @@ const StockDetails: FC = () => {
                       {ordersPagination.paginatedData.map((order) => (
                         <tr key={order.id}>
                           <td className="text-xs">
-                            {new Date(order.creationDate).toLocaleDateString('pt-BR')}
+                            {formatDate(order.creationDate)}
                           </td>
                           <td>
                             <div className={`badge badge-sm ${
@@ -355,7 +361,7 @@ const StockDetails: FC = () => {
                           </td>
                           <td className="hidden md:table-cell text-xs">
                             {order.withdrawalDate 
-                              ? new Date(order.withdrawalDate).toLocaleDateString('pt-BR')
+                              ? formatDate(order.withdrawalDate)
                               : <span className="text-base-content/50">-</span>
                             }
                           </td>
