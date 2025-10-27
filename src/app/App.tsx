@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "@/app/Layout";
-import { Home, NoMatch, Dashboard, Users, Invoices, Login, Stocks, StockDetails, Suppliers } from "@/pages";
+import { Home, NoMatch, Users, Invoices, Login, Stocks, StockDetails, Suppliers } from "@/pages";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -12,7 +12,6 @@ const App: FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<ProtectedRoute> <Layout /> </ProtectedRoute>}>
           <Route index element={<Home />} />
-          <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<Users />} />
           <Route path="suppliers" element={<Suppliers />} />
           <Route path="stocks" element={<Stocks />} />
