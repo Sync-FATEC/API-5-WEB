@@ -1,63 +1,123 @@
-# TypeScript React Tailwind Vite Template
+# Sistema de Controle de Estoque - Frontend
 
-This template provides a starting point for creating React projects with TypeScript, Tailwind CSS, and Vite.
+<div align="center">
+  <h3>📦 Base Administrativa de Caçapava</h3>
+  <p>Frontend do sistema de gerenciamento de estoque do almoxarifado e farmácia</p>
 
-## Overview
+  ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+  ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+  ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+</div>
 
-This template allows you to quickly set up a React project with TypeScript, Tailwind CSS, and Vite. It provides a modern development environment with features such as hot module replacement and fast refresh, making it easy to develop and customize your React applications.
+## 📋 Sobre
+O frontend é responsável por:
+- Interface simples e responsiva
+- Autenticação via login
+- Leitura de QR Codes para identificação rápida
+- Alertas visuais
+- Integração com o backend
 
-## Features
+## 🚀 Tecnologias
+- **React**
+- **TypeScript**
+- **HTML5**
+- **CSS3**
 
-- TypeScript: Develop with confidence using static type-checking and improved tooling.
+## ⚙️ Funcionalidades
+- Login e autenticação
+- Dashboard com visão de estoque
+- Busca por QR Code
+- Alertas de estoque
+- Relatórios visuais
 
-- React: Build dynamic user interfaces with the popular React library.
+# 🚦 Como Executar
 
-- Tailwind CSS: Easily style and customize your components using the utility-first approach of Tailwind CSS.
+### Pré-requisitos
+- Node.js (v18 ou superior)
+- npm ou yarn
 
-- Vite: Enjoy fast development and instant hot module replacement with Vite's lightning-fast dev server.
+### Instalação
 
-## Installation
-
-To create a new project using this template, follow these steps:
-
-1. Ensure that you have Node.js installed on your machine.
-2. Open a terminal and navigate to the directory where you want to create your project.
-3. Run the following command to create a new project using the template:
-
+1. Clone o repositório
 ```bash
-npx create-vite@latest --template typescript-react-tailwind-vite my-project
+git clone https://github.com/Sync-FATEC/API-5-FRONT/
 ```
 
-Replace my-project with the desired name for your project.
-
-4. Once the command completes, navigate into the project directory:
-
-```bash
-cd my-project
-```
-
-5. Install the dependencies:
-
+2. Instale as dependências
 ```bash
 npm install
 ```
 
-## Usage
-
-To start the development server and run the project, use the following command:
-
+3. Inicie o servidor
 ```bash
 npm run dev
 ```
 
-This will start the development server and open your project in the browser. Any changes you make to the source code will be automatically reflected in the browser.
-
-## Building for Production
-
-To build the project for production, use the following command:
-
-```bash
-npm run build
+## 📁 Estrutura de Diretórios
+```
+src/
+├── app/                   # Configuração principal da aplicação
+│   ├── Layout/            # Componente de layout principal
+│   ├── App.tsx            # Componente raiz e configuração de rotas
+│   ├── main.tsx           # Ponto de entrada da aplicação
+│   ├── store.ts           # Configuração do Redux store
+│   ├── hooks.ts           # Hooks do Redux (useAppDispatch, useAppSelector)
+│   └── index.css          # Estilos globais (Tailwind)
+│
+├── components/            # Componentes reutilizáveis
+│   ├── ConfirmDialog/     # Modal de confirmação
+│   ├── LayoutFooter/      # Rodapé do layout
+│   ├── LayoutHeader/      # Cabeçalho do layout
+│   ├── Pagination/        # Componente de paginação
+│   ├── Sidebar/           # Menu lateral
+│   ├── StockChangeModal/  # Modal de alteração de estoque
+│   ├── SupplierEditModal/ # Modal de edição de fornecedor
+│   ├── SupplierForm/      # Formulário de fornecedor
+│   ├── UserExcelImport/   # Importação de usuários via Excel
+│   ├── UserForm/          # Formulário de usuário
+│   ├── ProtectedRoute.tsx # HOC para proteção de rotas
+│   └── index.ts           # Barrel export dos componentes
+│
+├── pages/                 # Páginas da aplicação
+│   ├── Home/              # Página inicial
+│   ├── Invoices/          # Página de pedidos
+│   ├── Login/             # Página de login
+│   ├── NoMatch/           # Página 404
+│   ├── StockDetails/      # Detalhes do estoque
+│   ├── Stocks/            # Listagem de estoques
+│   ├── Supplier/          # Página de fornecedores
+│   ├── Users/             # Página de usuários
+│   └── index.ts           # Barrel export das páginas
+│
+├── services/              # Serviços de integração com APIs
+│   ├── authService.ts     # Serviço de autenticação
+│   ├── reportsService.ts  # Serviço de relatórios/dashboard
+│   ├── stockServices.ts   # Serviço de estoques
+│   └── supplierService.ts # Serviço de fornecedores
+│
+├── contexts/              # Contextos React
+│   ├── AuthContext.tsx    # Contexto de autenticação
+│   └── useAuth.ts         # Hook customizado para autenticação
+│
+├── hooks/                 # Hooks customizados
+│
+├── config/                # Configurações da aplicação
+│   └── firebase.ts        # Configuração do Firebase
+│
+├── shared/                # Recursos compartilhados
+│   └── api.ts             # Instância configurada do Axios
+│
+└── types/                 # Definições de tipos TypeScript  
 ```
 
-This will create an optimized build of your project in the dist directory.
+## 👥 Time
+| Nome | Função |
+|------|--------|
+| José Eduardo Fernandes| Scrum Master |
+| Ana Laura Moratelli | Product Owner |
+| Arthur Karnas | Desenvolvedora |
+| Erik Yokota | Desenvolvedor |
+| Filipe Colla | Desenvolvedor |
+| João Gabriel Solis  | Desenvolvedor |
+| Kauê Francisco | Desenvolvedor |
