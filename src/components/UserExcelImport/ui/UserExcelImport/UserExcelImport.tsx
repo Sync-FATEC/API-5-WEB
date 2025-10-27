@@ -98,7 +98,7 @@ export const UserExcelImport: FC<Props> = ({ onSuccess }) => {
             <a
               href="/planilha_padrao.xlsx"
               download="planilha_padrao.xlsx"
-              className="btn btn-info btn-sm gap-2"
+              className="btn btn-primary btn-sm gap-2"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-4 w-4 stroke-current">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
