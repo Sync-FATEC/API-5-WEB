@@ -15,7 +15,13 @@ const StockDetails: FC = () => {
 
   const [period, setPeriod] = useState<Period>("monthly");
   const [startDate, setStartDate] = useState<string>("2025-01-01");
-  const [endDate, setEndDate] = useState<string>("2025-10-20");
+  const [endDate, setEndDate] = useState<string>(() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  });
 
   const [dashboard, setDashboard] = useState<CompleteDashboard | null>(null);
   const [loading, setLoading] = useState(false);
