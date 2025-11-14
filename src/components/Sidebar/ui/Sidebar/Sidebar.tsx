@@ -6,6 +6,7 @@ export const Sidebar: FC = () => {
     { path: "/users", label: "Usuários" },
     { path: "/suppliers", label: "Fornecedores" },
     { path: "/stocks", label: "Estoques" },
+    { path: "/commitment-notes", label: "Notas de Empenho" },
     // { path: "/invoices", label: "Notas Fiscais" },
   ];
   return (

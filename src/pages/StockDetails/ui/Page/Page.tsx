@@ -13,7 +13,7 @@ const StockDetails: FC = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
 
-  const [period, setPeriod] = useState<Period>("monthly");
+  const [period] = useState<Period>("monthly");
   const [startDate, setStartDate] = useState<string>("2025-01-01");
   const [endDate, setEndDate] = useState<string>(() => {
     const today = new Date();
