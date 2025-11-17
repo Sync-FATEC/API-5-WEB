@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "@/app/Layout";
-import { Home, NoMatch, Users, Invoices, Login, Stocks, StockDetails, Suppliers, CommitmentNotes, CommitmentNoteForm, CommitmentNoteDetail } from "@/pages";
+import { Home, NoMatch, Users, Invoices, Login, Stocks, StockDetails, Suppliers, CommitmentNotes, CommitmentNoteForm, CommitmentNoteDetail, EmailTemplates } from "@/pages";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -21,6 +21,7 @@ const App: FC = () => {
           <Route path="commitment-notes/:id" element={<CommitmentNoteDetail />} />
           <Route path="commitment-notes/:id/edit" element={<CommitmentNoteForm />} />
           <Route path="invoices" element={<Invoices />} />
+          <Route path="email-templates" element={<EmailTemplates />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>

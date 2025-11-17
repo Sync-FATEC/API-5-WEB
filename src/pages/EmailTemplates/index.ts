@@ -1,0 +1,1 @@
+export { default as EmailTemplates } from './ui/Page/Page';

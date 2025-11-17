@@ -7,5 +7,6 @@ import { Stocks } from "./Stocks";
 import { StockDetails } from "./StockDetails";
 import { Suppliers } from "./Supplier";
 import { CommitmentNotes, CommitmentNoteForm, CommitmentNoteDetail } from "./CommitmentNotes";
+import { EmailTemplates } from "./EmailTemplates";
 
-export { Home, NoMatch, Users, Invoices, Login, Stocks, StockDetails, Suppliers, CommitmentNotes, CommitmentNoteForm, CommitmentNoteDetail };
+export { Home, NoMatch, Users, Invoices, Login, Stocks, StockDetails, Suppliers, CommitmentNotes, CommitmentNoteForm, CommitmentNoteDetail, EmailTemplates };

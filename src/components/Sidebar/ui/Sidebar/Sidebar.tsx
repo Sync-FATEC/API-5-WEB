@@ -1,14 +1,22 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "@/contexts/useAuth";
+import { RoleEnum } from "@/types/enums";
 export const Sidebar: FC = () => {
-  const navItems = [
-    // { path: "/dashboard", label: "Dashboard" },
-    { path: "/users", label: "Usuários" },
-    { path: "/suppliers", label: "Fornecedores" },
-    { path: "/stocks", label: "Estoques" },
-    { path: "/commitment-notes", label: "Notas de Empenho" },
-    // { path: "/invoices", label: "Notas Fiscais" },
-  ];
+  const { user } = useAuth();
+  const isAdmin = user?.role === RoleEnum.ADMIN;
+  const navItems = useMemo(() => {
+    const base = [
+      { path: "/users", label: "Usuários" },
+      { path: "/suppliers", label: "Fornecedores" },
+      { path: "/stocks", label: "Estoques" },
+      { path: "/commitment-notes", label: "Notas de Empenho" },
+    ];
+    if (isAdmin) {
+      base.push({ path: "/email-templates", label: "Templates de Email" });
+    }
+    return base;
+  }, [isAdmin]);
   return (
     <aside className="drawer-side z-40 lg:!h-auto">
       <label htmlFor="sidebar-drawer" className="drawer-overlay"></label>
