@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { UserForm, UserExcelImport, StockChangeModal } from "@/components";
+import { UserForm, UserExcelImport, StockChangeModal, SuccessModal } from "@/components";
 import { AuthService, AuthUser } from "@/services/authService";
 
 const Users: FC = () => {
@@ -14,6 +14,10 @@ const Users: FC = () => {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [showStockModal, setShowStockModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<AuthUser | null>(null);
+  const [successModal, setSuccessModal] = useState<{ isOpen: boolean; message: string }>({
+    isOpen: false,
+    message: "",
+  });
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -151,7 +155,10 @@ const Users: FC = () => {
           <UserForm
             onSuccess={() => {
               setShowForm(false);
-              alert("Usuário cadastrado com sucesso!");
+              setSuccessModal({
+                isOpen: true,
+                message: "Usuário cadastrado com sucesso!",
+              });
             }}
             onCancel={() => setShowForm(false)}
           />
@@ -161,7 +168,10 @@ const Users: FC = () => {
           <UserExcelImport
             onSuccess={() => {
               setShowImport(false);
-              alert("Usuários importados com sucesso!");
+              setSuccessModal({
+                isOpen: true,
+                message: "Usuários importados com sucesso!",
+              });
             }}
           />
         )}
@@ -431,6 +441,13 @@ const Users: FC = () => {
             onSuccess={handleStockChangeSuccess}
           />
         )}
+
+      {/* Modal de Sucesso */}
+      <SuccessModal
+        isOpen={successModal.isOpen}
+        message={successModal.message}
+        onClose={() => setSuccessModal({ isOpen: false, message: "" })}
+      />
     </div>
   );
 };

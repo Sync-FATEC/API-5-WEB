@@ -7,5 +7,6 @@ import { SupplierForm } from "./SupplierForm";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { SupplierEditModal } from "./SupplierEditModal";
 import { StockChangeModal } from "./StockChangeModal/StockChangeModal";
+import { SuccessModal } from "./SuccessModal";
 
-export { LayoutHeader, Menu, LayoutFooter, UserExcelImport, Sidebar, UserForm, SupplierForm, ConfirmDialog, SupplierEditModal, StockChangeModal };
+export { LayoutHeader, Menu, LayoutFooter, UserExcelImport, Sidebar, UserForm, SupplierForm, ConfirmDialog, SupplierEditModal, StockChangeModal, SuccessModal };
