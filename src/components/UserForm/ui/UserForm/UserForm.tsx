@@ -55,7 +55,7 @@ export const UserForm: FC<Props> = ({ onSuccess, onCancel }) => {
 
     setIsSubmitting(true);
     try {
-      await postJson("/auth/register", {
+      await postJson("/auth/users", {
         users: [{ ...formData, email: formData.email.toLowerCase() }],
       });
       setFormData({ name: "", email: "", role: "" });

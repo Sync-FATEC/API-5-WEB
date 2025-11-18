@@ -133,8 +133,15 @@ export function useUserExcelImport(): UseUserExcelImport {
     }
     setIsSubmitting(true);
     try {
-      // Backend expects { users: UsersType[] }
-      await postJson<{ users: ParsedUser[] }, any>("/auth/register", { users });
+      const patients = users.filter((u) => u.role?.toUpperCase() === 'PACIENTE');
+      const others = users.filter((u) => (u.role?.toUpperCase() || '') !== 'PACIENTE');
+
+      if (patients.length) {
+        await postJson<{ users: ParsedUser[] }, any>("/auth/register", { users: patients });
+      }
+      if (others.length) {
+        await postJson<{ users: ParsedUser[] }, any>("/auth/users", { users: others });
+      }
     } catch (e: any) {
       setErrors((prev) => [...prev, e?.message || "Falha ao enviar dados"]);
     } finally {
@@ -153,8 +160,14 @@ export function useUserExcelImport(): UseUserExcelImport {
     }
     setIsSubmitting(true);
     try {
-      const payload = users.map((u) => ({ ...u, stockId }));
-      await postJson<{ users: Array<ParsedUser & { stockId: string }> }, any>("/auth/register", { users: payload });
+      const patients = users.filter((u) => u.role?.toUpperCase() === 'PACIENTE').map((u) => ({ ...u, stockId }));
+      const others = users.filter((u) => (u.role?.toUpperCase() || '') !== 'PACIENTE').map((u) => ({ ...u, stockId }));
+      if (patients.length) {
+        await postJson<{ users: Array<ParsedUser & { stockId: string }> }, any>("/auth/register", { users: patients });
+      }
+      if (others.length) {
+        await postJson<{ users: Array<ParsedUser & { stockId: string }> }, any>("/auth/users", { users: others });
+      }
     } catch (e: any) {
       setErrors((prev) => [...prev, e?.message || "Falha ao enviar dados"]);
     } finally {
