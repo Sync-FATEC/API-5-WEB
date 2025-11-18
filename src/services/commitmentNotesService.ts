@@ -90,12 +90,6 @@ export class CommitmentNotesService {
   }
 
   async create(data: CreateCommitmentNoteDto): Promise<CommitmentNote> {
-    if (data.dataPrevistaEntrega) {
-      const dataEntrega = new Date(data.dataPrevistaEntrega);
-      dataEntrega.setDate(dataEntrega.getDate() + 1);
-      data.dataPrevistaEntrega = dataEntrega.toISOString().split("T")[0];
-    }
-
     const response = await api.post<ApiResponse<CommitmentNote>>(`/commitment-notes`, data);
     if (response.data.success && response.data.data) {
       return response.data.data;

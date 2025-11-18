@@ -20,6 +20,18 @@ const CommitmentNoteDetail: FC = () => {
     if (!value) return "—";
     const str = String(value);
     const hasTime = /T\d{2}:\d{2}|\s\d{2}:\d{2}/.test(str);
+    const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(str);
+
+    if (isDateOnly) {
+      const [yyyy, mm, dd] = str.split("-");
+      const localDate = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+      return new Intl.DateTimeFormat("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }).format(localDate);
+    }
+
     const d = new Date(str);
     if (!isNaN(d.getTime())) {
       if (hasTime) {
@@ -38,7 +50,8 @@ const CommitmentNoteDetail: FC = () => {
         year: "numeric",
       }).format(d);
     }
-    // Fallback básico quando não parseia como Date
+
+    // Fallback básico
     const datePart = str.slice(0, 10);
     if (/^\d{4}-\d{2}-\d{2}$/.test(datePart)) {
       const [yyyy, mm, dd] = datePart.split("-");

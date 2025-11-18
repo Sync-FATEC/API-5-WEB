@@ -53,7 +53,6 @@ const CommitmentNoteForm: FC = () => {
 
   // Campos editáveis no update
   const [updateForm, setUpdateForm] = useState<UpdateCommitmentNoteDto>({
-    valor: undefined,
     cargoResponsavel: "",
     frequenciaCobrancaDias: 15,
     urgencia: "",
@@ -108,7 +107,6 @@ const CommitmentNoteForm: FC = () => {
         const note = await service.getById(id);
         setExistingNote(note);
         setUpdateForm({
-          valor: note.valor,
           cargoResponsavel: note.cargoResponsavel || "",
           frequenciaCobrancaDias: note.frequenciaCobrancaDias || 15,
           urgencia: note.urgencia || "",
@@ -174,10 +172,7 @@ const CommitmentNoteForm: FC = () => {
     setError(null);
     try {
       const service = new CommitmentNotesService();
-      const payload: CreateCommitmentNoteDto = {
-        ...form,
-        dataPrevistaEntrega: addDays(new Date(form.dataPrevistaEntrega || addDays(new Date(), 30)), 1),
-      };
+      const payload: CreateCommitmentNoteDto = { ...form };
       const created = await service.create(payload);
       navigate(`/commitment-notes/${created.id}`);
     } catch (err) {
@@ -198,12 +193,7 @@ const CommitmentNoteForm: FC = () => {
     setError(null);
     try {
       const service = new CommitmentNotesService();
-      const payload: UpdateCommitmentNoteDto = {
-        ...updateForm,
-        dataPrevistaEntrega: updateForm.dataPrevistaEntrega
-          ? addDays(new Date(updateForm.dataPrevistaEntrega), 1)
-          : undefined,
-      };
+      const payload: UpdateCommitmentNoteDto = { ...updateForm };
       const updated = await service.update(id, payload);
       navigate(`/commitment-notes/${updated.id}`);
     } catch (err) {
@@ -329,10 +319,7 @@ const CommitmentNoteForm: FC = () => {
       {isEdit && existingNote && (
         <form onSubmit={handleUpdateSubmit} className="rounded-box border border-base-300 bg-base-100 p-4 sm:p-6 space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className="label"><span className="label-text">Valor</span></label>
-              <input type="number" step="0.01" className="input input-bordered w-full" value={updateForm.valor ?? existingNote.valor} onChange={(e) => setUpdateForm({ ...updateForm, valor: Number(e.target.value) })} />
-            </div>
+            {/* Valor não é editável no update, removido do formulário */}
             <div>
               <label className="label"><span className="label-text">Cargo do Responsável</span></label>
               <input className="input input-bordered w-full" value={updateForm.cargoResponsavel ?? ""} onChange={(e) => setUpdateForm({ ...updateForm, cargoResponsavel: e.target.value })} />
@@ -347,7 +334,7 @@ const CommitmentNoteForm: FC = () => {
             </div>
             <div>
               <label className="label"><span className="label-text">Data Prevista de Entrega</span></label>
-              <input type="date" className="input input-bordered w-full" value={updateForm.dataPrevistaEntrega ?? existingNote.dataPrevistaEntrega ?? addDays(new Date(), 30)} onChange={(e) => setUpdateForm({ ...updateForm, dataPrevistaEntrega: e.target.value })} />
+              <input type="date" className="input input-bordered w-full" value={updateForm.dataPrevistaEntrega ?? existingNote.dataPrevistaEntrega ?? ""} onChange={(e) => setUpdateForm({ ...updateForm, dataPrevistaEntrega: e.target.value })} />
             </div>
           </div>
           <div className="flex items-center justify-end gap-2">
