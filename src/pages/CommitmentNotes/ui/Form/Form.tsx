@@ -5,6 +5,7 @@ import { SupplierService, Supplier } from "@/services/supplierService";
 import { useAuth } from "@/contexts/useAuth";
 import { RoleEnum } from "@/types/enums";
 import { usePdfExtraction } from "@/components/UserExcelImport/lib/usePdfExtraction";
+import { postFormDataWithFile } from "@/shared/api";
 
 function addDays(date: Date, days: number) {
   const d = new Date(date);
@@ -32,6 +33,7 @@ const CommitmentNoteForm: FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [extracting, setExtracting] = useState(false);
   const [showPdfPrompt, setShowPdfPrompt] = useState<boolean>(true);
+  const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null);
 
   const [existingNote, setExistingNote] = useState<CommitmentNote | null>(null);
 
@@ -134,6 +136,11 @@ const CommitmentNoteForm: FC = () => {
 
   const handleFileChange = async (file?: File) => {
     if (!file) return;
+    
+    // Armazenar o arquivo PDF para enviar depois
+    setSelectedPdfFile(file);
+    console.log(`📁 [Frontend] Arquivo selecionado para upload:`, file.name, `(${file.size} bytes)`);
+    
     setExtracting(true);
     setError(null);
     try {
@@ -171,10 +178,16 @@ const CommitmentNoteForm: FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const service = new CommitmentNotesService();
-      const payload: CreateCommitmentNoteDto = { ...form };
-      const created = await service.create(payload);
-      navigate(`/commitment-notes/${created.id}`);
+      // Usar a função que suporta multipart/form-data com arquivo
+      const response = await postFormDataWithFile<CreateCommitmentNoteDto, CommitmentNote>(
+        '/commitment-notes',
+        { ...form },
+        selectedPdfFile || undefined
+      );
+      
+      if (response.data) {
+        navigate(`/commitment-notes/${response.data.id}`);
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao criar nota";
       setError(msg);
