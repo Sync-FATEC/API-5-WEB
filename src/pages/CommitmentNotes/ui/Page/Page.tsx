@@ -63,6 +63,15 @@ const CommitmentNotes: FC = () => {
     );
   };
 
+  const formatDate = (date: string | Date | undefined) => {
+    if (!date) return "—";
+    const d = typeof date === 'string' ? new Date(date) : date;
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <div className="p-4 sm:p-6">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -126,8 +135,8 @@ const CommitmentNotes: FC = () => {
                     </td>
                     <td>{n.ug}</td>
                     <td>R$ {n.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
-                    <td>{n.dataNota}</td>
-                    <td>{n.dataPrevistaEntrega || "—"}</td>
+                    <td>{formatDate(n.dataNota)}</td>
+                    <td>{formatDate(n.dataPrevistaEntrega)}</td>
                     <td>{renderPrazo(n)}</td>
                     <td>{renderResponsavel(n)}</td>
                     <td className="text-right">
@@ -185,12 +194,12 @@ const CommitmentNotes: FC = () => {
 
                   <div className="flex justify-between gap-2">
                     <span className="font-medium text-base-content/70">Data da Nota:</span>
-                    <span className="text-right">{n.dataNota}</span>
+                    <span className="text-right">{formatDate(n.dataNota)}</span>
                   </div>
 
                   <div className="flex justify-between gap-2">
                     <span className="font-medium text-base-content/70">Prevista:</span>
-                    <span className="text-right">{n.dataPrevistaEntrega || "—"}</span>
+                    <span className="text-right">{formatDate(n.dataPrevistaEntrega)}</span>
                   </div>
 
                   <div className="flex justify-between gap-2">
