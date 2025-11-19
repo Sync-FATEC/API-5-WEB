@@ -90,10 +90,17 @@ const CommitmentNotes: FC = () => {
         </div>
       )}
 
-      {!loading && !error && (
-        <div className="rounded-box border border-base-300 bg-base-100 p-3 sm:p-4">
-          <div className="overflow-x-auto">
-            <table className="table">
+      {!loading && !error && notes.length === 0 && (
+        <div className="text-center text-base-content/70">
+          Nenhuma nota encontrada.
+        </div>
+      )}
+
+      {!loading && !error && notes.length > 0 && (
+        <>
+          {/* Tabela para Desktop */}
+          <div className="hidden overflow-x-auto lg:block rounded-box border border-base-300 bg-base-100 p-3 sm:p-4">
+            <table className="table table-zebra w-full">
               <thead className="bg-base-200">
                 <tr>
                   <th>Número</th>
@@ -138,10 +145,86 @@ const CommitmentNotes: FC = () => {
               </tbody>
             </table>
           </div>
-          {notes.length === 0 && (
-            <div className="text-center text-sm text-base-content/60">Nenhuma nota encontrada.</div>
-          )}
-        </div>
+
+          {/* Cards para Mobile/Tablet */}
+          <div className="space-y-3 lg:hidden">
+            {notes.map((n) => (
+              <div
+                key={n.id}
+                className="rounded-lg border border-base-300 bg-base-100 p-3 shadow-sm sm:p-4"
+              >
+                <div className="mb-3 flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="truncate font-semibold text-base sm:text-lg">{n.numeroNota}</h3>
+                    <p className="truncate text-xs text-base-content/70 sm:text-sm">{n.razaoSocial}</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <span className="badge badge-outline badge-sm">
+                      {n.atrasado ? "Atrasado" : "No prazo"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5 text-xs sm:space-y-2 sm:text-sm">
+                  <div className="flex justify-between gap-2">
+                    <span className="font-medium text-base-content/70">CNPJ:</span>
+                    <span className="text-right">{n.cnpj}</span>
+                  </div>
+
+                  <div className="flex justify-between gap-2">
+                    <span className="font-medium text-base-content/70">UG:</span>
+                    <span className="text-right">{n.ug}</span>
+                  </div>
+
+                  <div className="flex justify-between gap-2">
+                    <span className="font-medium text-base-content/70">Valor:</span>
+                    <span className="text-right font-medium">
+                      R$ {n.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between gap-2">
+                    <span className="font-medium text-base-content/70">Data da Nota:</span>
+                    <span className="text-right">{n.dataNota}</span>
+                  </div>
+
+                  <div className="flex justify-between gap-2">
+                    <span className="font-medium text-base-content/70">Prevista:</span>
+                    <span className="text-right">{n.dataPrevistaEntrega || "—"}</span>
+                  </div>
+
+                  <div className="flex justify-between gap-2">
+                    <span className="font-medium text-base-content/70">Prazo:</span>
+                    <div>{renderPrazo(n)}</div>
+                  </div>
+
+                  <div className="flex justify-between gap-2">
+                    <span className="font-medium text-base-content/70">Responsável:</span>
+                    <span className="text-right">{renderResponsavel(n)}</span>
+                  </div>
+                </div>
+
+                {/* Botões de Ação */}
+                <div className="mt-3 flex gap-2 border-t border-base-300 pt-3">
+                  <button
+                    className="btn btn-outline btn-sm flex-1"
+                    onClick={() => navigate(`/commitment-notes/${n.id}`)}
+                  >
+                    Ver
+                  </button>
+                  {isAdmin && (
+                    <button
+                      className="btn btn-outline btn-error btn-sm flex-1"
+                      onClick={() => handleDelete(n.id)}
+                    >
+                      Remover
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
