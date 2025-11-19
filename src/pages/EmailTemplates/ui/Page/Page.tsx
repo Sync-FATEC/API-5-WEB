@@ -163,15 +163,6 @@ const EmailTemplatesPage: FC = () => {
         <div className="mb-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <h1 className="text-2xl font-bold">Templates de Email</h1>
-            <div className="flex w-full items-center gap-2 md:w-auto">
-              <input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar por nome ou assunto"
-                className="input input-bordered input-sm flex-1 md:w-80"
-              />
-              <button className="btn btn-primary btn-sm" onClick={handleCreate}>Criar</button>
-            </div>
           </div>
         </div>
 
@@ -181,7 +172,7 @@ const EmailTemplatesPage: FC = () => {
           </div>
         )}
 
-        <div className="grid gap-6 lg:grid-cols-12">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-12">
           <div className="lg:col-span-3">
             <div className="rounded-lg border border-base-300 bg-base-100">
               <div className="border-b border-base-300 p-3 font-semibold">Lista</div>
@@ -222,8 +213,8 @@ const EmailTemplatesPage: FC = () => {
                   ))}
                 </div>
 
-                <div className="grid gap-4 lg:grid-cols-12">
-                  <div className="lg:col-span-7">
+                <div className="grid gap-4 grid-cols-1 xl:grid-cols-12">
+                  <div className="xl:col-span-7">
                     <label className="mb-1 block text-sm font-medium">Assunto</label>
                     <textarea
                       ref={subjectRef}
@@ -242,10 +233,10 @@ const EmailTemplatesPage: FC = () => {
                       className="textarea textarea-bordered h-[28rem] w-full font-mono"
                     />
                   </div>
-                  <div className="lg:col-span-5">
+                  <div className="xl:col-span-5">
                     <div className="rounded-lg border border-base-200">
                       <div className="border-b border-base-200 p-3 text-sm font-semibold">Variáveis</div>
-                      <div className="p-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+                      <div className="p-3 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
                         {allowedVars.map((v) => (
                           <div key={v} className="space-y-1">
                             <label className="block text-xs font-medium text-base-content/70">{v}</label>
