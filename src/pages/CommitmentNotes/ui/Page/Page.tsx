@@ -3,11 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { CommitmentNotesService, CommitmentNote } from "@/services/commitmentNotesService";
 import { useAuth } from "@/contexts/useAuth";
 import { RoleEnum } from "@/types/enums";
+import { ConfirmDialog } from "@/components/ConfirmDialog/ui/ConfirmDialog/ConfirmDialog";
 
 const CommitmentNotes: FC = () => {
   const [notes, setNotes] = useState<CommitmentNote[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deletingNote, setDeletingNote] = useState<CommitmentNote | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -32,16 +35,23 @@ const CommitmentNotes: FC = () => {
     fetchNotes();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!isAdmin) return;
-    if (!confirm("Tem certeza que deseja remover esta nota?")) return;
+  const handleDelete = async (note: CommitmentNote) => {
+    setDeletingNote(note);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingNote || !isAdmin) return;
+    setIsDeleting(true);
     try {
       const service = new CommitmentNotesService();
-      await service.remove(id);
+      await service.remove(deletingNote.id);
       await fetchNotes();
+      setDeletingNote(null);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao remover nota";
       setError(msg);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -74,6 +84,20 @@ const CommitmentNotes: FC = () => {
 
   return (
     <div className="p-4 sm:p-6">
+      {deletingNote && (
+        <ConfirmDialog
+          isOpen={!!deletingNote}
+          title="Confirmar Desativação"
+          message={`Tem certeza que deseja remover a nota de empenho "${deletingNote.numeroNota}"?`}
+          confirmLabel="Remover"
+          cancelLabel="Cancelar"
+          variant="danger"
+          isLoading={isDeleting}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setDeletingNote(null)}
+        />
+      )}
+
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold sm:text-3xl">Notas de Empenho</h1>
@@ -144,7 +168,7 @@ const CommitmentNotes: FC = () => {
                         <button className="btn btn-xs" onClick={() => navigate(`/commitment-notes/${n.id}`)}>Ver</button>
                         {isAdmin && (
                           <>
-                            <button className="btn btn-xs btn-error" onClick={() => handleDelete(n.id)}>Remover</button>
+                            <button className="btn btn-xs btn-error" onClick={() => handleDelete(n)}>Remover</button>
                           </>
                         )}
                       </div>
@@ -224,7 +248,7 @@ const CommitmentNotes: FC = () => {
                   {isAdmin && (
                     <button
                       className="btn btn-outline btn-error btn-sm flex-1"
-                      onClick={() => handleDelete(n.id)}
+                      onClick={() => handleDelete(n)}
                     >
                       Remover
                     </button>
