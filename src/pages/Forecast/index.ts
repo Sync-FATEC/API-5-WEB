@@ -1,0 +1,1 @@
+export { default as Forecast } from './ui/Page/Page';

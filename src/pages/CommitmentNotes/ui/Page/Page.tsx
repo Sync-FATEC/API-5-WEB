@@ -4,6 +4,7 @@ import { CommitmentNotesService, CommitmentNote } from "@/services/commitmentNot
 import { useAuth } from "@/contexts/useAuth";
 import { RoleEnum } from "@/types/enums";
 import { ConfirmDialog } from "@/components/ConfirmDialog/ui/ConfirmDialog/ConfirmDialog";
+import { BalanceForecastChart } from "@/components/BalanceForecastChart";
 
 const CommitmentNotes: FC = () => {
   const [notes, setNotes] = useState<CommitmentNote[]>([]);
@@ -11,6 +12,7 @@ const CommitmentNotes: FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [deletingNote, setDeletingNote] = useState<CommitmentNote | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showForecast, setShowForecast] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -110,8 +112,13 @@ const CommitmentNotes: FC = () => {
           {isAdmin && (
             <button className="btn-primary btn btn-sm sm:btn-md" onClick={() => navigate("/commitment-notes/new")}>Nova Nota</button>
           )}
+          <button className="btn btn-sm sm:btn-md" onClick={() => navigate('/forecast')}>
+            Previsão de Saldo
+          </button>
         </div>
       </div>
+
+      
 
       {loading && (
         <div className="text-center text-base-content/70">Carregando notas...</div>

@@ -219,4 +219,19 @@ export class ReportsService {
       throw new Error(errorMessage);
     }
   }
+
+  async getBalanceForecast(months: number = 6): Promise<{ labels: string[]; predictions: number[]; }>{
+    try {
+      const qs = toQuery({ months });
+      const response = await api.get<ApiResponse<{ labels: string[]; predictions: number[] }>>(`/reports/forecast/balance?${qs}`);
+      if (response.data.success && response.data.data) {
+        return response.data.data as { labels: string[]; predictions: number[] };
+      }
+      const fallbackMsg = response.data.message || 'Erro ao obter previsão de saldo';
+      throw new Error(fallbackMsg);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro inesperado ao obter previsão de saldo';
+      throw new Error(errorMessage);
+    }
+  }
 }
