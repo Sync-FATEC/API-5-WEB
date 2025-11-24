@@ -10,27 +10,6 @@
   ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 </div>
 
-## 📋 Sobre
-O frontend é responsável por:
-- Interface simples e responsiva
-- Autenticação via login
-- Leitura de QR Codes para identificação rápida
-- Alertas visuais
-- Integração com o backend
-
-## 🚀 Tecnologias
-- **React**
-- **TypeScript**
-- **HTML5**
-- **CSS3**
-
-## ⚙️ Funcionalidades
-- Login e autenticação
-- Dashboard com visão de estoque
-- Busca por QR Code
-- Alertas de estoque
-- Relatórios visuais
-
 # 🚦 Como Executar
 
 ### Pré-requisitos
@@ -57,58 +36,67 @@ npm run dev
 ## 📁 Estrutura de Diretórios
 ```
 src/
-├── app/                   # Configuração principal da aplicação
-│   ├── Layout/            # Componente de layout principal
-│   ├── App.tsx            # Componente raiz e configuração de rotas
-│   ├── main.tsx           # Ponto de entrada da aplicação
-│   ├── store.ts           # Configuração do Redux store
-│   ├── hooks.ts           # Hooks do Redux (useAppDispatch, useAppSelector)
-│   └── index.css          # Estilos globais (Tailwind)
+├── app/                          # Configuração principal da aplicação
+│   ├── Layout/                   # Componente de layout principal
+│   ├── App.tsx                   # Componente raiz e configuração de rotas
+│   ├── main.tsx                  # Ponto de entrada da aplicação
+│   ├── store.ts                  # Configuração do Redux store
+│   ├── hooks.ts                  # Hooks do Redux (useAppDispatch, useAppSelector)
+│   └── index.css                 # Estilos globais (Tailwind)
 │
-├── components/            # Componentes reutilizáveis
-│   ├── ConfirmDialog/     # Modal de confirmação
-│   ├── LayoutFooter/      # Rodapé do layout
-│   ├── LayoutHeader/      # Cabeçalho do layout
-│   ├── Pagination/        # Componente de paginação
-│   ├── Sidebar/           # Menu lateral
-│   ├── StockChangeModal/  # Modal de alteração de estoque
-│   ├── SupplierEditModal/ # Modal de edição de fornecedor
-│   ├── SupplierForm/      # Formulário de fornecedor
-│   ├── UserExcelImport/   # Importação de usuários via Excel
-│   ├── UserForm/          # Formulário de usuário
-│   ├── ProtectedRoute.tsx # HOC para proteção de rotas
-│   └── index.ts           # Barrel export dos componentes
+├── components/                   # Componentes reutilizáveis
+│   ├── BalanceForecastChart/     # Gráfico de previsão de saldo (novo)
+│   ├── ConfirmDialog/            # Modal de confirmação
+│   ├── LayoutFooter/             # Rodapé do layout
+│   ├── LayoutHeader/             # Cabeçalho do layout
+│   ├── Pagination/               # Componente de paginação
+│   ├── ProtectedRoute.tsx        # HOC para proteção de rotas
+│   ├── Sidebar/                  # Menu lateral
+│   ├── StockChangeModal/         # Modal de alteração de estoque
+│   ├── SuccessModal/             # Modal de sucesso (novo)
+│   ├── SupplierEditModal/        # Modal de edição de fornecedor
+│   ├── SupplierForm/             # Formulário de fornecedor
+│   ├── UserExcelImport/          # Importação de usuários via Excel
+│   ├── UserForm/                 # Formulário de usuário
+│   └── index.ts                  # Barrel export dos componentes
 │
-├── pages/                 # Páginas da aplicação
-│   ├── Home/              # Página inicial
-│   ├── Invoices/          # Página de pedidos
-│   ├── Login/             # Página de login
-│   ├── NoMatch/           # Página 404
-│   ├── StockDetails/      # Detalhes do estoque
-│   ├── Stocks/            # Listagem de estoques
-│   ├── Supplier/          # Página de fornecedores
-│   ├── Users/             # Página de usuários
-│   └── index.ts           # Barrel export das páginas
+├── pages/                        # Páginas da aplicação
+│   ├── CommitmentNotes/          # Página de notas de compromisso (novo)
+│   ├── EmailTemplates/           # Página de templates de email (novo)
+│   ├── Forecast/                 # Página de previsão de estoque (novo)
+│   ├── Home/                     # Página inicial / Dashboard
+│   ├── Invoices/                 # Página de pedidos
+│   ├── Login/                    # Página de login
+│   ├── NoMatch/                  # Página 404
+│   ├── StockDetails/             # Detalhes do estoque
+│   ├── Stocks/                   # Listagem de estoques
+│   ├── Supplier/                 # Página de fornecedores
+│   ├── Users/                    # Página de usuários
+│   └── index.ts                  # Barrel export das páginas
 │
-├── services/              # Serviços de integração com APIs
-│   ├── authService.ts     # Serviço de autenticação
-│   ├── reportsService.ts  # Serviço de relatórios/dashboard
-│   ├── stockServices.ts   # Serviço de estoques
-│   └── supplierService.ts # Serviço de fornecedores
+├── services/                     # Serviços de integração com APIs
+│   ├── authService.ts            # Serviço de autenticação
+│   ├── commitmentNotesService.ts # Serviço de notas de compromisso (novo)
+│   ├── emailTemplatesService.ts  # Serviço de templates de email (novo)
+│   ├── reportsService.ts         # Serviço de relatórios/dashboard
+│   ├── stockServices.ts          # Serviço de estoques
+│   └── supplierService.ts        # Serviço de fornecedores
 │
-├── contexts/              # Contextos React
-│   ├── AuthContext.tsx    # Contexto de autenticação
-│   └── useAuth.ts         # Hook customizado para autenticação
+├── contexts/                     # Contextos React
+│   ├── AuthContext.tsx           # Contexto de autenticação
+│   └── useAuth.ts                # Hook customizado para autenticação
 │
-├── hooks/                 # Hooks customizados
+├── hooks/                        # Hooks customizados
+│   └── [hooks específicos do projeto]
 │
-├── config/                # Configurações da aplicação
-│   └── firebase.ts        # Configuração do Firebase
+├── config/                       # Configurações da aplicação
+│   └── firebase.ts               # Configuração do Firebase
 │
-├── shared/                # Recursos compartilhados
-│   └── api.ts             # Instância configurada do Axios
+├── shared/                       # Recursos compartilhados
+│   └── api.ts                    # Instância configurada do Axios
 │
-└── types/                 # Definições de tipos TypeScript  
+└── types/                        # Definições de tipos TypeScript
+    └── [tipos e interfaces da aplicação]
 ```
 
 ## 👥 Time
